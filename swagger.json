@@ -1,0 +1,1364 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "version": "1.0.0",
+    "title": "Read Journey",
+    "description": "Read Journey backend"
+  },
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "servers": [{ "url": "https://readjourney.b.goit.study/api" }, {"url": "http://localhost:6003/api"}],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Authorization endpoints"
+    },
+    {
+      "name": "Book",
+      "description": "Book endpoints"
+    }
+  ],
+  "paths": {
+    "/users/signup": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "User sign up",
+        "requestBody": {
+          "description": "Sign up object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignUpRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignUpResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "404": {
+            "description": "Service not found",
+            "content": {}
+          },
+          "409": {
+            "description": "Such email already exists",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/users/signin": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "User sign in",
+        "requestBody": {
+          "description": "Sign in object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignInRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignInResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": "Email or password invalid",
+            "content": {}
+          },
+          "404": {
+            "description": "Service not found",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/users/current": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Get current user info",
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCurrentResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "404": {
+            "description": "Service not found",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/users/current/refresh": {
+      "get": {
+        "tags": ["Auth"],
+        "summary": "Get fresh token and refreshToken for the current user",
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetRefreshCurrentResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "404": {
+            "description": "Service not found",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/users/signout": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "User sign out",
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignOutResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "404": {
+            "description": "Service not found",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/books/recommend": {
+      "get": {
+        "tags": ["Book"],
+        "summary": "Get recommend books",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "title",
+            "description": "The title for searching",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "author",
+            "description": "The author for searching",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "description": "The number page of the recommend books",
+            "schema": {
+              "type": "number",
+              "default": 1
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "description": "The limit for the recommend books",
+            "schema": {
+              "type": "number",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetRecommendBooksResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/books/add": {
+      "post": {
+        "tags": ["Book"],
+        "summary": "Add a new book",
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Update object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddNewBookRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddNewBookResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "404": {
+            "description": "Service not found",
+            "content": {}
+          },
+          "409": {
+            "description": "Such book already exists",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/books/add/{id}": {
+      "post": {
+        "tags": ["Book"],
+        "summary": "Add a new book from recommend books",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Book id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddNewBookResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          },
+          "409": {
+            "description": "Such book already exists",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/books/remove/{id}": {
+      "delete": {
+        "tags": ["Book"],
+        "summary": "Delete User's book",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Book id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RemoveBookResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": "This book not found",
+            "content": {}
+          },
+          "404": {
+            "description": "Service not found",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/books/own": {
+      "get": {
+        "tags": ["Book"],
+        "summary": "Get User's books",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "status",
+            "description": "The book status",
+            "schema": {
+              "type": "string",
+              "enum": ["unread", "in-progress", "done"]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetUsersBooksResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/books/reading/start": {
+      "post": {
+        "tags": ["Book"],
+        "summary": "Save the start of reading the book",
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Start reading a book object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StartReadingBookRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StartReadingBookResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          },
+          "409": {
+            "description": "This book is already read | You have already started reading this book",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/books/reading/finish": {
+      "post": {
+        "tags": ["Book"],
+        "summary": "Save the finish of reading the book",
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Finish reading a book object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FinishReadingBookRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FinishReadingBookResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          },
+          "409": {
+            "description": "You haven't started reading this book | This book is already read | The finish page cann't be less than the start page",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/books/reading": {
+      "delete": {
+        "tags": ["Book"],
+        "summary": "Delete the reading of the book",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "bookId",
+            "description": "Book id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "readingId",
+            "description": "Reading id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FinishReadingBookResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          },
+          "409": {
+            "description": "This book is already read | You haven't finished reading this book",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/books/{id}": {
+      "get": {
+        "tags": ["Book"],
+        "summary": "Get info about the book",
+        "security": [{ "Bearer": [] }],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Book id",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FinishReadingBookResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "404": {
+            "description": "Not found",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "SignUpRequest": {
+        "type": "object",
+        "required": ["name", "email", "password"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "User name as string",
+            "example": "TestName"
+          },
+          "email": {
+            "type": "string",
+            "description": "User email as a string with a valid email address format",
+            "example": "test@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "User password as a string which consists of 7 symbols",
+            "example": "1234567"
+          }
+        }
+      },
+      "SignUpResponse": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User email",
+            "example": "test@gmail.com"
+          },
+          "name": {
+            "type": "string",
+            "description": "User name",
+            "example": "TestName"
+          },
+          "token": {
+            "type": "string",
+            "description": "User token(1h)",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjFlMjVmNmIwYTJjY2I5NTU5MWVjNyIsImlhdCI6MTY4OTM3OTQyMywiZXhwIjoxNjg5NDYyMjIzfQ.hT2Ta6pBhDR1vOF7LjcKxofyASDPjcTZtFi9CESKIuA"
+          },
+          "refreshToken": {
+            "type": "string",
+            "description": "User refreshToken",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YWQyZWRkMTEwYjBiOGRlZjQ4MTY1ZiIsImlhdCI6MTcwNTg0ODg3NSwiZXhwIjoxNzA2NDUzNjc1fQ.MONgGZKIUzqvq13OAlJvBctxJl1rt5OXMFQeIiZm2Ag"
+          }
+        },
+        "example": {
+          "email": "test@gmail.com",
+          "name": "TestName",
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjFlMjVmNmIwYTJjY2I5NTU5MWVjNyIsImlhdCI6MTY4OTM3OTQyMywiZXhwIjoxNjg5NDYyMjIzfQ.hT2Ta6pBhDR1vOF7LjcKxofyASDPjcTZtFi9CESKIuA",
+          "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YWQyZWRkMTEwYjBiOGRlZjQ4MTY1ZiIsImlhdCI6MTcwNTg0ODg3NSwiZXhwIjoxNzA2NDUzNjc1fQ.MONgGZKIUzqvq13OAlJvBctxJl1rt5OXMFQeIiZm2Ag"
+        }
+      },
+      "SignInRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User email as a string with a valid email address format",
+            "example": "test@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "User password as a string which consists of 7 symbols",
+            "example": "1234567"
+          }
+        }
+      },
+      "SignInResponse": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User email",
+            "example": "test@gmail.com"
+          },
+          "name": {
+            "type": "string",
+            "description": "User name",
+            "example": "TestName"
+          },
+          "token": {
+            "type": "string",
+            "description": "User token(1h)",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjFlMjVmNmIwYTJjY2I5NTU5MWVjNyIsImlhdCI6MTY4OTM3OTQyMywiZXhwIjoxNjg5NDYyMjIzfQ.hT2Ta6pBhDR1vOF7LjcKxofyASDPjcTZtFi9CESKIuA"
+          },
+          "refreshToken": {
+            "type": "string",
+            "description": "User refreshToken",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YWQyZWRkMTEwYjBiOGRlZjQ4MTY1ZiIsImlhdCI6MTcwNTg0ODg3NSwiZXhwIjoxNzA2NDUzNjc1fQ.MONgGZKIUzqvq13OAlJvBctxJl1rt5OXMFQeIiZm2Ag"
+          }
+        },
+        "example": {
+          "email": "test@gmail.com",
+          "name": "TestName",
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjFlMjVmNmIwYTJjY2I5NTU5MWVjNyIsImlhdCI6MTY4OTM3OTQyMywiZXhwIjoxNjg5NDYyMjIzfQ.hT2Ta6pBhDR1vOF7LjcKxofyASDPjcTZtFi9CESKIuA",
+          "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YWQyZWRkMTEwYjBiOGRlZjQ4MTY1ZiIsImlhdCI6MTcwNTg0ODg3NSwiZXhwIjoxNzA2NDUzNjc1fQ.MONgGZKIUzqvq13OAlJvBctxJl1rt5OXMFQeIiZm2Ag"
+        }
+      },
+      "GetCurrentResponse": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "User id",
+            "example": "64b1e25f6b0a2ccb95591ec7"
+          },
+          "name": {
+            "type": "string",
+            "description": "User name",
+            "example": "TestName"
+          },
+          "email": {
+            "type": "string",
+            "description": "User email",
+            "example": "test@gmail.com"
+          },
+          "token": {
+            "type": "string",
+            "description": "User token(1h)",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjFlMjVmNmIwYTJjY2I5NTU5MWVjNyIsImlhdCI6MTY4OTM3OTQyMywiZXhwIjoxNjg5NDYyMjIzfQ.hT2Ta6pBhDR1vOF7LjcKxofyASDPjcTZtFi9CESKIuA"
+          },
+          "refreshToken": {
+            "type": "string",
+            "description": "User refreshToken",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YWQyZWRkMTEwYjBiOGRlZjQ4MTY1ZiIsImlhdCI6MTcwNTg0ODg3NSwiZXhwIjoxNzA2NDUzNjc1fQ.MONgGZKIUzqvq13OAlJvBctxJl1rt5OXMFQeIiZm2Ag"
+          }
+        },
+        "example": {
+          "_id": "64b1e25f6b0a2ccb95591ec7",
+          "name": "TestName",
+          "email": "test@gmail.com",
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjFlMjVmNmIwYTJjY2I5NTU5MWVjNyIsImlhdCI6MTY4OTM3OTQyMywiZXhwIjoxNjg5NDYyMjIzfQ.hT2Ta6pBhDR1vOF7LjcKxofyASDPjcTZtFi9CESKIuA",
+          "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YWQyZWRkMTEwYjBiOGRlZjQ4MTY1ZiIsImlhdCI6MTcwNTg0ODg3NSwiZXhwIjoxNzA2NDUzNjc1fQ.MONgGZKIUzqvq13OAlJvBctxJl1rt5OXMFQeIiZm2Ag"
+        }
+      },
+      "GetRefreshCurrentResponse": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "User token(1h)",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjFlMjVmNmIwYTJjY2I5NTU5MWVjNyIsImlhdCI6MTY4OTM3OTQyMywiZXhwIjoxNjg5NDYyMjIzfQ.hT2Ta6pBhDR1vOF7LjcKxofyASDPjcTZtFi9CESKIuA"
+          },
+          "refreshToken": {
+            "type": "string",
+            "description": "User refreshToken",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YWQyZWRkMTEwYjBiOGRlZjQ4MTY1ZiIsImlhdCI6MTcwNTg0ODg3NSwiZXhwIjoxNzA2NDUzNjc1fQ.MONgGZKIUzqvq13OAlJvBctxJl1rt5OXMFQeIiZm2Ag"
+          }
+        },
+        "example": {
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjFlMjVmNmIwYTJjY2I5NTU5MWVjNyIsImlhdCI6MTY4OTM3OTQyMywiZXhwIjoxNjg5NDYyMjIzfQ.hT2Ta6pBhDR1vOF7LjcKxofyASDPjcTZtFi9CESKIuA",
+          "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YWQyZWRkMTEwYjBiOGRlZjQ4MTY1ZiIsImlhdCI6MTcwNTg0ODg3NSwiZXhwIjoxNzA2NDUzNjc1fQ.MONgGZKIUzqvq13OAlJvBctxJl1rt5OXMFQeIiZm2Ag"
+        }
+      },
+      "SignOutResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string",
+            "description": "Sign out success",
+            "example": "Sign out success"
+          }
+        },
+        "example": {
+          "message": "Sign out success"
+        }
+      },
+      "GetRecommendBooksResponse": {
+        "type": "object",
+        "properties": {
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "description": "Book id",
+                  "example": "654fc4d00a563c69b09895ef"
+                },
+                "title": {
+                  "type": "string",
+                  "description": "Book title",
+                  "example": "Lovers of Justice"
+                },
+                "author": {
+                  "type": "string",
+                  "description": "Book author",
+                  "example": "Yuri Andrukhovych"
+                },
+                "imageUrl": {
+                  "type": "string",
+                  "description": "Book image url",
+                  "example": "https://res.cloudinary.com/drfvfno3o/image/upload/v1699726543/books/1.webp"
+                },
+                "totalPages": {
+                  "type": "number",
+                  "description": "Total amount of pages",
+                  "example": 304
+                },
+                "recommend": {
+                  "type": "boolean",
+                  "description": "Indicates whether the book is recommended or not",
+                  "example": true
+                }
+              }
+            }
+          },
+          "totalPages": {
+            "type": "number"
+          },
+          "page": {
+            "type": "number"
+          },
+          "perPage": {
+            "type": "number"
+          }
+        },
+        "example": {
+          "results": [
+            {
+              "_id": "654fc4d00a563c69b09895ef",
+              "title": "Lovers of Justice",
+              "author": "Yuri Andrukhovych",
+              "imageUrl": "https://res.cloudinary.com/drfvfno3o/image/upload/v1699726543/books/1.webp",
+              "totalPages": 304,
+              "recommend": true
+            },
+            {
+              "_id": "654fc5064f56fe7a8d0e19eb",
+              "title": "It doesn't hurt",
+              "author": "Kateryna Babkina",
+              "imageUrl": "https://res.cloudinary.com/drfvfno3o/image/upload/v1699726598/books/2.png",
+              "totalPages": 72,
+              "recommend": true
+            }
+          ],
+          "totalPages": 4,
+          "page": 1,
+          "perPage": 2
+        }
+      },
+      "AddNewBookRequest": {
+        "type": "object",
+        "required": ["title", "author", "totalPages"],
+        "properties": {
+          "title": {
+            "description": "Book title",
+            "type": "string",
+            "format": "json",
+            "example": "Book New Dark Ages. Book 1: The Colony"
+          },
+          "author": {
+            "description": "Book author",
+            "type": "string",
+            "format": "json",
+            "example": "Max Kidruk"
+          },
+          "totalPages": {
+            "description": "Total amount of pages",
+            "type": "number",
+            "format": "json",
+            "example": 904
+          }
+        }
+      },
+      "AddNewBookResponse": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Book id",
+            "example": "654fde408f25db3803669af2"
+          },
+          "title": {
+            "type": "string",
+            "description": "Book title",
+            "example": "Book New Dark Ages. Book 1: The Colony"
+          },
+          "author": {
+            "type": "string",
+            "description": "Book author",
+            "example": "Max Kidruk"
+          },
+          "imageUrl": {
+            "anyOf": [
+              {
+                "type": "string",
+                "description": "Book image url",
+                "example": "https://res.cloudinary.com/drfvfno3o/image/upload/v1699733055/books/8.webp"
+              },
+              {
+                "type": "null",
+                "example": null
+              }
+            ]
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Total amount of pages",
+            "example": 904
+          },
+          "status": {
+            "type": "string",
+            "description": "Book status",
+            "example": "unread"
+          },
+          "progress": {
+            "type": "array",
+            "description": "Information on the progress of reading the book",
+            "example": []
+          },
+          "owner": {
+            "type": "string",
+            "description": "User id",
+            "example": "654f5eedca10dbb094e5c197"
+          }
+        },
+        "example": {
+          "_id": "654fde408f25db3803669af2",
+          "title": "Book New Dark Ages. Book 1: The Colony",
+          "author": "Max Kidruk",
+          "imageUrl": "https://res.cloudinary.com/drfvfno3o/image/upload/v1699733055/books/8.webp",
+          "totalPages": 904,
+          "status": "unread",
+          "owner": "654f5eedca10dbb094e5c197",
+          "progress": []
+        }
+      },
+      "RemoveBookResponse": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Book id",
+            "example": "6552a2e9729403a570ead40c"
+          },
+          "message": {
+            "type": "string",
+            "description": "Success message",
+            "example": "This book was deleted"
+          }
+        },
+        "example": {
+          "message": "This book was deleted",
+          "id": "6552a2e9729403a570ead40c"
+        }
+      },
+      "StartReadingBookRequest": {
+        "type": "object",
+        "required": ["id", "page"],
+        "properties": {
+          "id": {
+            "description": "Book id",
+            "type": "string",
+            "format": "json",
+            "example": "654f747c01dbf90a6bd6b854"
+          },
+          "page": {
+            "description": "Start page of reading the book",
+            "type": "number",
+            "format": "json",
+            "example": 1
+          }
+        }
+      },
+      "StartReadingBookResponse": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Book id",
+            "example": "654fde408f25db3803669af2"
+          },
+          "title": {
+            "type": "string",
+            "description": "Book title",
+            "example": "Book New Dark Ages. Book 1: The Colony"
+          },
+          "author": {
+            "type": "string",
+            "description": "Book author",
+            "example": "Max Kidruk"
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "Book image url",
+            "example": "https://res.cloudinary.com/drfvfno3o/image/upload/v1699733055/books/8.webp"
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Total amount of pages",
+            "example": 904
+          },
+          "status": {
+            "type": "string",
+            "description": "Book status",
+            "example": "in-progress"
+          },
+          "progress": {
+            "type": "array",
+            "description": "Information on the progress of reading the book",
+            "example": [
+              {
+                "startPage": 1,
+                "startReading": "2023-11-11T22:49:29.590Z",
+                "finishPage": 4,
+                "finishReading": "2023-11-11T22:53:34.959Z",
+                "speed": 44,
+                "status": "inactive"
+              },
+              {
+                "startPage": 5,
+                "startReading": "2023-11-11T22:53:50.853Z",
+                "status": "active"
+              }
+            ]
+          },
+          "owner": {
+            "type": "string",
+            "description": "User id",
+            "example": "654f5eedca10dbb094e5c197"
+          }
+        },
+        "example": {
+          "_id": "654fde408f25db3803669af2",
+          "title": "Book New Dark Ages. Book 1: The Colony",
+          "author": "Max Kidruk",
+          "imageUrl": "https://res.cloudinary.com/drfvfno3o/image/upload/v1699733055/books/8.webp",
+          "totalPages": 904,
+          "status": "in-progress",
+          "owner": "654f5eedca10dbb094e5c197",
+          "progress": [
+            {
+              "startPage": 1,
+              "startReading": "2023-11-11T22:49:29.590Z",
+              "finishPage": 4,
+              "finishReading": "2023-11-11T22:53:34.959Z",
+              "speed": 44,
+              "status": "inactive"
+            },
+            {
+              "startPage": 5,
+              "startReading": "2023-11-11T22:53:50.853Z",
+              "finishPage": 7,
+              "finishReading": "2023-11-11T22:54:59.914Z",
+              "speed": 105,
+              "status": "inactive"
+            },
+            {
+              "startPage": 8,
+              "startReading": "2023-11-11T22:56:44.674Z",
+              "status": "active"
+            }
+          ]
+        }
+      },
+      "FinishReadingBookRequest": {
+        "type": "object",
+        "required": ["id", "page"],
+        "properties": {
+          "id": {
+            "description": "Book id",
+            "type": "string",
+            "format": "json",
+            "example": "654f747c01dbf90a6bd6b854"
+          },
+          "page": {
+            "description": "Final page of reading the book",
+            "type": "number",
+            "format": "json",
+            "example": 10
+          }
+        }
+      },
+      "FinishReadingBookResponse": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Book id",
+            "example": "654fde408f25db3803669af2"
+          },
+          "title": {
+            "type": "string",
+            "description": "Book title",
+            "example": "Book New Dark Ages. Book 1: The Colony"
+          },
+          "author": {
+            "type": "string",
+            "description": "Book author",
+            "example": "Max Kidruk"
+          },
+          "imageUrl": {
+            "type": "string",
+            "description": "Book image url",
+            "example": "https://res.cloudinary.com/drfvfno3o/image/upload/v1699733055/books/8.webp"
+          },
+          "totalPages": {
+            "type": "number",
+            "description": "Total amount of pages",
+            "example": 904
+          },
+          "status": {
+            "type": "string",
+            "description": "Book status",
+            "example": "in-progress"
+          },
+          "progress": {
+            "type": "array",
+            "description": "Information on the progress of reading the book",
+            "example": [
+              {
+                "startPage": 1,
+                "startReading": "2023-11-11T22:49:29.590Z",
+                "finishPage": 7,
+                "finishReading": "2023-11-11T22:53:34.959Z",
+                "speed": 44,
+                "status": "inactive"
+              },
+              {
+                "startPage": 8,
+                "startReading": "2023-11-11T22:56:44.674Z",
+                "finishPage": 10,
+                "finishReading": "2023-11-11T23:02:29.046Z",
+                "speed": 21,
+                "status": "inactive"
+              }
+            ]
+          },
+          "owner": {
+            "type": "string",
+            "description": "User id",
+            "example": "654f5eedca10dbb094e5c197"
+          },
+          "timeLeftToRead": {
+            "type": "object",
+            "properties": {
+              "hours": {
+                "type": "number",
+                "description": "Amount of hours",
+                "example": 16
+              },
+              "minutes": {
+                "type": "number",
+                "description": "Amount of minutes",
+                "example": 30
+              },
+              "seconds": {
+                "type": "number",
+                "description": "Amount of seconds",
+                "example": 18
+              }
+            }
+          }
+        },
+        "example": {
+          "_id": "654fde408f25db3803669af2",
+          "title": "Book New Dark Ages. Book 1: The Colony",
+          "author": "Max Kidruk",
+          "imageUrl": "https://res.cloudinary.com/drfvfno3o/image/upload/v1699733055/books/8.webp",
+          "totalPages": 904,
+          "status": "in-progress",
+          "owner": "654f5eedca10dbb094e5c197",
+          "progress": [
+            {
+              "startPage": 1,
+              "startReading": "2023-11-11T22:49:29.590Z",
+              "finishPage": 74,
+              "finishReading": "2023-11-11T22:53:34.959Z",
+              "speed": 44,
+              "status": "inactive"
+            },
+            {
+              "startPage": 8,
+              "startReading": "2023-11-11T22:56:44.674Z",
+              "finishPage": 10,
+              "finishReading": "2023-11-11T23:02:29.046Z",
+              "speed": 21,
+              "status": "inactive"
+            }
+          ],
+          "timeLeftToRead": {
+            "hours": 16,
+            "minutes": 30,
+            "seconds": 18
+          }
+        }
+      },
+      "GetUsersBooksResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "_id": {
+              "type": "string",
+              "description": "Book id",
+              "example": "654fde408f25db3803669af2"
+            },
+            "title": {
+              "type": "string",
+              "description": "Book title",
+              "example": "Book New Dark Ages. Book 1: The Colony"
+            },
+            "author": {
+              "type": "string",
+              "description": "Book author",
+              "example": "Max Kidruk"
+            },
+            "imageUrl": {
+              "type": "string",
+              "description": "Book image url",
+              "example": "https://res.cloudinary.com/drfvfno3o/image/upload/v1699733055/books/8.webp"
+            },
+            "totalPages": {
+              "type": "number",
+              "description": "Total amount of pages",
+              "example": 904
+            },
+            "status": {
+              "type": "string",
+              "description": "Book status",
+              "example": "in-progress"
+            },
+            "progress": {
+              "type": "array",
+              "description": "Information on the progress of reading the book",
+              "example": [
+                {
+                  "startPage": 1,
+                  "startReading": "2023-11-11T22:49:29.590Z",
+                  "finishPage": 7,
+                  "finishReading": "2023-11-11T22:53:34.959Z",
+                  "speed": 44,
+                  "status": "inactive"
+                },
+                {
+                  "startPage": 8,
+                  "startReading": "2023-11-11T22:56:44.674Z",
+                  "finishPage": 10,
+                  "finishReading": "2023-11-11T23:02:29.046Z",
+                  "speed": 21,
+                  "status": "inactive"
+                }
+              ]
+            },
+            "owner": {
+              "type": "string",
+              "description": "User id",
+              "example": "654f5eedca10dbb094e5c197"
+            }
+          }
+        },
+        "example": [
+          {
+            "_id": "654fe498c4972d030d94db5e",
+            "title": "Lovers of Justice",
+            "author": "Yuri Andrukhovych",
+            "imageUrl": "https://res.cloudinary.com/drfvfno3o/image/upload/v1699726543/books/1.webp",
+            "totalPages": 304,
+            "status": "in-progress",
+            "owner": "654f5eedca10dbb094e5c197",
+            "progress": [
+              {
+                "startPage": 1,
+                "startReading": "2023-11-11T22:49:29.590Z",
+                "finishPage": 7,
+                "finishReading": "2023-11-11T22:53:34.959Z",
+                "speed": 44,
+                "status": "inactive"
+              },
+              {
+                "startPage": 8,
+                "startReading": "2023-11-11T22:56:44.674Z",
+                "finishPage": 10,
+                "finishReading": "2023-11-11T23:02:29.046Z",
+                "speed": 21,
+                "status": "inactive"
+              }
+            ]
+          },
+          {
+            "_id": "654fe854548f3b992ad6963c",
+            "title": "There is land beyond Perekop",
+            "author": "Anastasiia Levkova",
+            "imageUrl": "https://res.cloudinary.com/drfvfno3o/image/upload/v1699735635/books/654f5eedca10dbb094e5c197_There_is_land_beyond_Perekop.webp",
+            "totalPages": 392,
+            "status": "unread",
+            "owner": "654f5eedca10dbb094e5c197",
+            "progress": []
+          }
+        ]
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Use token (or refreshToken for refreshing)"
+      }
+    }
+  }
+}
