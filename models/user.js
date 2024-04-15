@@ -1,8 +1,7 @@
-const { handleMangooseError, HttpError } = require('../helpers');
+const { handleMangooseError } = require('../helpers');
 const { Schema, model } = require('mongoose');
 const Joi = require('joi');
-
-const emailRegexp = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
+const { emailRegexp } = require('../constants/regex');
 
 const userSchema = Schema(
   {
@@ -18,16 +17,38 @@ const userSchema = Schema(
     },
     avatarURL: {
       type: String || null,
-      default: null
+      default: null,
     },
     gender: {
-      type: String,
-      enum: ['male', 'female'],
-      required: false,
+      type: String || null,
+      enum: ['male', 'female', null],
+      default: null,
+    },
+    weight: {
+      type: Number || null,
+      validate: {
+        validator: function (value) {
+          return value === null || (value <= 300 && value >= 30);
+        },
+        message: 'Weight must be greater that 30 or equal to 30 and less than or equal to 300',
+      },
+      default: null,
+    },
+    activeTime: {
+      type: Number || null,
+      validate: {
+        validator: function (value) {
+          return value === null || value >= 0;
+        },
+        message: 'ActiveTime must be greater that 0',
+      },
+      default: null,
     },
     waterDailyNorma: {
       type: Number,
-      default: 2000
+      min: 0.1,
+      max:5000,
+      default: 2000,
     },
     password: {
       type: String,
@@ -88,8 +109,20 @@ const updateUserSchema = Joi.object({
     'string.base': 'The gender field must be a string',
     'any.only': "Invalid gender. Allowed values are 'male', 'female'",
   }),
-  waterDailyNorma: Joi.number().messages({
-    'string.base': 'The waterDailyNorma must be a number.',
+  weight: Joi.number().min(30).max(300).messages({
+    'number.base': 'The weight must be a number.',
+    'number.min': 'The weight must be greater than or equal to 30',
+    'number.max': 'The weight must be less than or equal to 300',
+  }),
+  activeTime: Joi.number().min(0.1).max(24).messages({
+    'number.base': 'The activeTime must be a number.',
+    'number.min': 'The activeTime must be greater than 0',
+    'number.max': 'The activeTime must be less than 24',
+  }),
+  waterDailyNorma: Joi.number().min(0.1).max(5000).messages({
+    'number.base': 'The waterDailyNorma must be a number.',
+    'number.min': 'The waterDailyNorma must be greater than 0',
+    'number.max': 'The waterDailyNorma must be less than 5000',
   }),
 });
 

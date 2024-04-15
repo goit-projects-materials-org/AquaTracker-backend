@@ -2,26 +2,30 @@ const { HttpError } = require('../../helpers');
 const { User } = require('../../models/user');
 
 const updateUser = async (req, res) => {
-    console.log(req)
-//   const { email, password } = req.body;
-//   const foundUser = await User.findOne({ email });
-//   if (!foundUser) {
-//     throw HttpError(401, 'Email or password invalid');
-//   }
-//   const isCorrectPassword = await bcrypt.compare(password, foundUser.password);
-//   if (!isCorrectPassword) {
-//     throw HttpError(401, 'Email or password invalid');
-//   }
-//   const payload = { id: foundUser._id };
-//   const createdToken = jwt.sign(payload, SECRET_KEY, { expiresIn: '1h' });
-//   const createdRefreshToken = jwt.sign(payload, REFRESH_SECRET_KEY, { expiresIn: '7d' });
+  const { _id: currentUserId } = req.user;
+  const { name, email, gender, weight, activeTime, waterDailyNorma } = req.body;
 
-//   const { name, avatarURL, gender, waterDailyNorma, token, refreshToken } = await User.findByIdAndUpdate(
-//     foundUser._id,
-//     { token: createdToken, refreshToken: createdRefreshToken },
-//     { new: true },
-//   );
-  res.status(200).json({  });
+  const newData = {};
+  name && (newData.name = name);
+  gender && (newData.gender = gender);
+  weight && (newData.weight = weight);
+  activeTime && (newData.activeTime = activeTime);
+  req.file.path && (newData.avatarURL = req.file.path);
+
+  if (email) {
+    const foundUser = await User.findOne({ email, _id: { $ne: currentUserId } });
+    if (foundUser) {
+      throw HttpError(409, 'Such email already exists');
+    }
+    newData.email = email;
+  }
+  if (waterDailyNorma) {
+    newData.waterDailyNorma = waterDailyNorma;
+    ///add water logic
+  }
+
+  const { password, token, refreshToken, createdAt, updatedAt, ...user } = await User.findByIdAndUpdate(currentUserId, newData, { new: true }).lean();
+  res.status(200).json(user);
 };
 
 module.exports = updateUser;

@@ -1,15 +1,22 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const { HttpError } = require('../../helpers');
-const { User } = require('../../models/user');
-const { SECRET_KEY, REFRESH_SECRET_KEY } = process.env;
+const { Water } = require('../../models/water');
 
-const signup = async (req, res) => {
-  const { email, password } = req.body;
-  const foundUser = await User.findOne({ email });
-  if (foundUser) {
-    throw HttpError(409, 'Such email already exists');
-  };
+const addWater = async (req, res) => {
+  const { date, amount, time } = req.body;
+  const { _id: owner } = req.user;
+  let data;
+  const foundWaterDayData = await Water.findOne({ owner, date });
+
+//   if (foundWaterDayData) {
+//     data = await Water.findByIdAndUpdate(
+//       foundWaterDayData._id,
+//       {
+//         $inc: { consumedAmountWater: +amount },
+//         $push: { consumedWaterDoses: { amount, time } },
+//       },
+//       { new: true },
+//     ).select('-createdAt -updatedAt');
+//   }
 
   const hashPassword = await bcrypt.hash(password, 10);
   const newUser = {
@@ -32,4 +39,4 @@ const signup = async (req, res) => {
   res.status(201).json({ email, name, avatarURL, gender, weight, activeTime, waterDailyNorma, token, refreshToken });
 };
 
-module.exports = signup;
+module.exports = addWater;

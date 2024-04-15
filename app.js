@@ -1,7 +1,8 @@
 const express = require('express');
 const logger = require('morgan');
 const cors = require('cors');
-const usersRouter = require('./routes/api/auth');
+const usersRouter = require('./routes/api/user');
+const waterRouter = require('./routes/api/water');
 const app = express();
 
 const formatsLogger = app.get('env') === 'development' ? 'dev' : 'short';
@@ -15,6 +16,7 @@ const swaggerDocument = require('./swagger.json');
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api/users', usersRouter);
+app.use('/api/water', waterRouter);
 
 
 app.use((req, res) => {

@@ -18,12 +18,12 @@ const signin = async (req, res) => {
   const createdToken = jwt.sign(payload, SECRET_KEY, { expiresIn: '1h' });
   const createdRefreshToken = jwt.sign(payload, REFRESH_SECRET_KEY, { expiresIn: '7d' });
 
-  const { name, avatarURL, gender, waterDailyNorma, token, refreshToken } = await User.findByIdAndUpdate(
+  const { name, avatarURL, gender, weight, activeTime, waterDailyNorma, token, refreshToken } = await User.findByIdAndUpdate(
     foundUser._id,
     { token: createdToken, refreshToken: createdRefreshToken },
     { new: true },
   );
-  res.status(201).json({ email, name, avatarURL, gender, waterDailyNorma, token, refreshToken });
+  res.status(201).json({ email, name, avatarURL, gender, weight, activeTime, waterDailyNorma, token, refreshToken });
 };
 
 module.exports = signin;
