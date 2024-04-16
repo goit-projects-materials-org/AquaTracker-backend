@@ -1,42 +1,46 @@
-const { HttpError } = require('../../helpers');
 const { Water } = require('../../models/water');
 
 const addWater = async (req, res) => {
-  const { date, amount, time } = req.body;
+  const { amount, time } = req.body;
   const { _id: owner } = req.user;
+
+  const startOfDay = new Date(time);
+  startOfDay.setUTCHours(0, 0, 0, 0);
+  const endOfDay = new Date(time);
+  endOfDay.setUTCHours(23, 59, 59, 999);
+
   let data;
-  const foundWaterDayData = await Water.findOne({ owner, date });
 
-//   if (foundWaterDayData) {
-//     data = await Water.findByIdAndUpdate(
-//       foundWaterDayData._id,
-//       {
-//         $inc: { consumedAmountWater: +amount },
-//         $push: { consumedWaterDoses: { amount, time } },
-//       },
-//       { new: true },
-//     ).select('-createdAt -updatedAt');
-//   }
+  const foundWaterDayData = await Water.findOne({
+    owner,
+    date: {
+      $gte: startOfDay,
+      $lt: endOfDay,
+    },
+  });
 
-  const hashPassword = await bcrypt.hash(password, 10);
-  const newUser = {
-    email,
-    name: email.split('@')[0],
-    password: hashPassword,
-  };
-  const user = await User.create(newUser);
+  if (foundWaterDayData) {
+    data = await Water.findByIdAndUpdate(
+      foundWaterDayData._id,
+      {
+        $inc: { consumedAmountWater: +amount },
+        $push: { consumedWaterDoses: { amount, time } },
+      },
+      { new: true },
+    ).select('-createdAt -updatedAt');
+  } else {
+    const newWaterDay = {
+      date: time,
+      consumedAmountWater: amount,
+      waterDailyNorma: req.user.waterDailyNorma,
+      consumedWaterDoses: [{ amount, time }],
+      owner,
+    };
 
-  const payload = { id: user._id };
+    data = await Water.create(newWaterDay);
+  }
 
-  const createdToken = jwt.sign(payload, SECRET_KEY, { expiresIn: '1h' });
-  const createdRefreshToken = jwt.sign(payload, REFRESH_SECRET_KEY, { expiresIn: '7d' });
-
-  const { name, avatarURL, gender, waterDailyNorma, weight, activeTime, token, refreshToken } = await User.findByIdAndUpdate(
-    user._id,
-    { token: createdToken, refreshToken: createdRefreshToken },
-    { new: true },
-  );
-  res.status(201).json({ email, name, avatarURL, gender, weight, activeTime, waterDailyNorma, token, refreshToken });
+  res.status(200).json(data);
 };
 
 module.exports = addWater;

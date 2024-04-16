@@ -1,14 +1,14 @@
-const { handleMangooseError } = require('../helpers');
+const { handleMangooseError} = require('../helpers');
 const { Schema, model } = require('mongoose');
 const Joi = require('joi');
-const { dateRegexp } = require('../constants/regex');
+const { timeUTCRegexp } = require('../constants/regex');
 
 const waterSchema = Schema(
   {
     date: {
-      type: String,
-      match: dateRegexp,
+      type: Date,
       required: true,
+      match: timeUTCRegexp,
     },
     consumedAmountWater: {
       type: Number,
@@ -29,10 +29,19 @@ const waterSchema = Schema(
             max: 5000,
             required: true,
           },
-          time: Date,
+          time: {
+            type: Date,
+            required: true,
+            match: timeUTCRegexp,
+          },
         },
       ],
       default: [],
+      required: true,
+    },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: 'user',
       required: true,
     },
   },
@@ -42,21 +51,15 @@ const waterSchema = Schema(
 waterSchema.post('save', handleMangooseError);
 
 const addWaterSchema = Joi.object({
-  date: Joi.string().pattern(dateRegexp).required().empty(false).messages({
-    'string.base': 'The date must be a string.',
-    'any.required': 'The date field is required.',
-    'string.empty': 'The date must not be empty.',
-    'string.pattern.base': 'The date must be in format YYYY-MM-DD.',
-  }),
   amount: Joi.number().min(0.1).max(5000).messages({
     'number.base': 'The amount must be a number.',
     'number.min': 'The amount must be greater than 0',
     'number.max': 'The amount must be less than 5000',
   }),
-  time: Joi.date().iso().required().messages({
-    'date.base': 'The time must be a date.',
+  time: Joi.string().required().regex(timeUTCRegexp, { invert: false }).messages({
+    'string.base': 'The time must be a string.',
     'any.required': 'The time field is required.',
-    'date.iso': 'The time must be in ISO 8601 format.',
+    'string.pattern.base': 'The time must be in UTC format.',
   }),
 });
 const updateWaterSchema = Joi.object({
@@ -65,10 +68,10 @@ const updateWaterSchema = Joi.object({
     'number.min': 'The amount must be greater than 0',
     'number.max': 'The amount must be less than 5000',
   }),
-  time: Joi.date().iso().required().messages({
-    'date.base': 'The time must be a date.',
+  time: Joi.string().required().regex(timeUTCRegexp, { invert: false }).messages({
+    'string.base': 'The time must be a string.',
     'any.required': 'The time field is required.',
-    'date.iso': 'The time must be in ISO 8601 format.',
+    'string.pattern.base': 'The time must be in UTC format.',
   }),
 });
 
