@@ -7,26 +7,26 @@ const getMonthWaterData = async (req, res) => {
 
   const [year, month] = date.split('-');
 
-  const utcDate = new Date(Date.UTC(year, month - 1, day));
+  const utcDate = new Date(Date.UTC(year, month - 1, 1));
 
-  const startOfDay = new Date(utcDate);
-  startOfDay.setUTCHours(0, 0, 0, 0);
-  const endOfDay = new Date(utcDate);
-  endOfDay.setUTCHours(23, 59, 59, 999);
+  const lastDayOfMonth = new Date(Date.UTC(year, month, 0));
+  lastDayOfMonth.setUTCHours(23, 59, 59, 999);
 
-  const foundWaterDayData = await Water.findOne({
+  const foundWaterMonthData = await Water.find({
     owner,
     date: {
-      $gte: startOfDay,
-      $lt: endOfDay,
+      $gte: utcDate,
+      $lt: lastDayOfMonth,
     },
-  });
+  })
+    .sort({ date: 1 })
+    .select('-createdAt -updatedAt -owner');
 
-  if (!foundWaterDayData) {
+  if (!foundWaterMonthData) {
     throw HttpError(404, `Info for ${date} not found`);
   }
 
-  res.status(200).json(foundWaterDayData);
+  res.status(200).json(foundWaterMonthData);
 };
 
 module.exports = getMonthWaterData;

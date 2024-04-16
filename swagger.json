@@ -2,20 +2,20 @@
   "openapi": "3.0.1",
   "info": {
     "version": "1.0.0",
-    "title": "Read Journey",
-    "description": "Read Journey backend"
+    "title": "Aqua Tracker",
+    "description": "Aqua Tracker backend"
   },
   "consumes": ["application/json"],
   "produces": ["application/json"],
-  "servers": [{ "url": "https://readjourney.b.goit.study/api" }, {"url": "http://localhost:6003/api"}],
+  "servers": [{ "url": "http://localhost:7003/api" }],
   "tags": [
     {
       "name": "Auth",
       "description": "Authorization endpoints"
     },
     {
-      "name": "Book",
-      "description": "Book endpoints"
+      "name": "Water",
+      "description": "Water endpoints"
     }
   ],
   "paths": {
@@ -131,6 +131,107 @@
           },
           "404": {
             "description": "Service not found",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/users/current/edit": {
+      "patch": {
+        "tags": ["Auth"],
+        "summary": "Edit current user info",
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Edit user object",
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "description": "User name",
+                    "type": "string",
+                    "format": "json",
+                    "example": "Test name"
+                  },
+                  "email": {
+                    "description": "User email",
+                    "type": "string",
+                    "format": "json",
+                    "example": "test@gmail.com"
+                  },
+                  "gender": {
+                    "description": "User gender",
+                    "type": "string",
+                    "enum": ["female", "male"],
+                    "format": "json",
+                    "example": "test@gmail.com"
+                  },
+                  "weight": {
+                    "description": "User weight",
+                    "type": "number",
+                    "min": 30,
+                    "max": 300,
+                    "format": "json",
+                    "example": 60
+                  },
+                  "activeTime": {
+                    "description": "User active time",
+                    "type": "number",
+                    "min": 0.1,
+                    "max": 24,
+                    "format": "json",
+                    "example": 2
+                  },
+                  "waterDailyNorma": {
+                    "description": "User water daily norma",
+                    "type": "number",
+                    "min": 0.1,
+                    "max": 5000,
+                    "format": "json",
+                    "example": 2000
+                  },
+                  "avatar": {
+                    "description": "Avatar file",
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditUserRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EditUserResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "404": {
+            "description": "Service not found",
+            "content": {}
+          },
+          "409": {
+            "description": "Such email already exists",
             "content": {}
           },
           "500": {
@@ -659,13 +760,8 @@
     "schemas": {
       "SignUpRequest": {
         "type": "object",
-        "required": ["name", "email", "password"],
+        "required": ["email", "password"],
         "properties": {
-          "name": {
-            "type": "string",
-            "description": "User name as string",
-            "example": "TestName"
-          },
           "email": {
             "type": "string",
             "description": "User email as a string with a valid email address format",
@@ -689,7 +785,32 @@
           "name": {
             "type": "string",
             "description": "User name",
-            "example": "TestName"
+            "example": "test"
+          },
+          "avatarURL": {
+            "type": "null",
+            "description": "User avatarURL",
+            "example": null
+          },
+          "gender": {
+            "type": "null",
+            "description": "User gender",
+            "example": null
+          },
+          "weight": {
+            "type": "null",
+            "description": "User weight",
+            "example": null
+          },
+          "activeTime": {
+            "type": "null",
+            "description": "User active time",
+            "example": null
+          },
+          "waterDailyNorma": {
+            "type": "number",
+            "description": "User water daily norma",
+            "example": 2000
           },
           "token": {
             "type": "string",
@@ -703,10 +824,15 @@
           }
         },
         "example": {
-          "email": "test@gmail.com",
-          "name": "TestName",
-          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjFlMjVmNmIwYTJjY2I5NTU5MWVjNyIsImlhdCI6MTY4OTM3OTQyMywiZXhwIjoxNjg5NDYyMjIzfQ.hT2Ta6pBhDR1vOF7LjcKxofyASDPjcTZtFi9CESKIuA",
-          "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YWQyZWRkMTEwYjBiOGRlZjQ4MTY1ZiIsImlhdCI6MTcwNTg0ODg3NSwiZXhwIjoxNzA2NDUzNjc1fQ.MONgGZKIUzqvq13OAlJvBctxJl1rt5OXMFQeIiZm2Ag"
+          "email": "test5@gmail.com",
+          "name": "test5",
+          "avatarURL": null,
+          "gender": null,
+          "weight": null,
+          "activeTime": null,
+          "waterDailyNorma": 2000,
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MWVmMjJjOTYwNGMxYTEwN2E0NGE3OSIsImlhdCI6MTcxMzMwNDEwOCwiZXhwIjoxNzEzMzA3NzA4fQ.qAPRcgNKwuNnRKQfuKed5586WCc0JLJyRoP0M8-g0lE",
+          "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MWVmMjJjOTYwNGMxYTEwN2E0NGE3OSIsImlhdCI6MTcxMzMwNDEwOCwiZXhwIjoxNzEzOTA4OTA4fQ.kcIfr-q08RwBZgFe-2l48TAbITfCnLpSFR2qp3pei0A"
         }
       },
       "SignInRequest": {
@@ -736,7 +862,32 @@
           "name": {
             "type": "string",
             "description": "User name",
-            "example": "TestName"
+            "example": "test"
+          },
+          "avatarURL": {
+            "type": "string",
+            "description": "User avatarURL",
+            "example": "https://res.cloudinary.com/drfvfno3o/image/upload/v1713304877/avatars/661cfcf810f883d8229047b1.jpg"
+          },
+          "gender": {
+            "type": "string",
+            "description": "User gender",
+            "example": "female"
+          },
+          "weight": {
+            "type": "number",
+            "description": "User weight",
+            "example": 60
+          },
+          "activeTime": {
+            "type": "number",
+            "description": "User active time",
+            "example": 2
+          },
+          "waterDailyNorma": {
+            "type": "number",
+            "description": "User water daily norma",
+            "example": 3000
           },
           "token": {
             "type": "string",
@@ -750,29 +901,54 @@
           }
         },
         "example": {
-          "email": "test@gmail.com",
-          "name": "TestName",
-          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjFlMjVmNmIwYTJjY2I5NTU5MWVjNyIsImlhdCI6MTY4OTM3OTQyMywiZXhwIjoxNjg5NDYyMjIzfQ.hT2Ta6pBhDR1vOF7LjcKxofyASDPjcTZtFi9CESKIuA",
-          "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YWQyZWRkMTEwYjBiOGRlZjQ4MTY1ZiIsImlhdCI6MTcwNTg0ODg3NSwiZXhwIjoxNzA2NDUzNjc1fQ.MONgGZKIUzqvq13OAlJvBctxJl1rt5OXMFQeIiZm2Ag"
+          "email": "test5@gmail.com",
+          "name": "test5",
+          "avatarURL": "https://res.cloudinary.com/drfvfno3o/image/upload/v1713304877/avatars/661cfcf810f883d8229047b1.jpg",
+          "gender": "female",
+          "weight": 60,
+          "activeTime": 2,
+          "waterDailyNorma": 3000,
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MWVmMjJjOTYwNGMxYTEwN2E0NGE3OSIsImlhdCI6MTcxMzMwNDEwOCwiZXhwIjoxNzEzMzA3NzA4fQ.qAPRcgNKwuNnRKQfuKed5586WCc0JLJyRoP0M8-g0lE",
+          "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MWVmMjJjOTYwNGMxYTEwN2E0NGE3OSIsImlhdCI6MTcxMzMwNDEwOCwiZXhwIjoxNzEzOTA4OTA4fQ.kcIfr-q08RwBZgFe-2l48TAbITfCnLpSFR2qp3pei0A"
         }
       },
       "GetCurrentResponse": {
         "type": "object",
         "properties": {
-          "_id": {
-            "type": "string",
-            "description": "User id",
-            "example": "64b1e25f6b0a2ccb95591ec7"
-          },
-          "name": {
-            "type": "string",
-            "description": "User name",
-            "example": "TestName"
-          },
           "email": {
             "type": "string",
             "description": "User email",
             "example": "test@gmail.com"
+          },
+          "name": {
+            "type": "string",
+            "description": "User name",
+            "example": "test"
+          },
+          "avatarURL": {
+            "type": "string",
+            "description": "User avatarURL",
+            "example": "https://res.cloudinary.com/drfvfno3o/image/upload/v1713304877/avatars/661cfcf810f883d8229047b1.jpg"
+          },
+          "gender": {
+            "type": "string",
+            "description": "User gender",
+            "example": "female"
+          },
+          "weight": {
+            "type": "number",
+            "description": "User weight",
+            "example": 60
+          },
+          "activeTime": {
+            "type": "number",
+            "description": "User active time",
+            "example": 2
+          },
+          "waterDailyNorma": {
+            "type": "number",
+            "description": "User water daily norma",
+            "example": 3000
           },
           "token": {
             "type": "string",
@@ -786,11 +962,15 @@
           }
         },
         "example": {
-          "_id": "64b1e25f6b0a2ccb95591ec7",
-          "name": "TestName",
-          "email": "test@gmail.com",
-          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjFlMjVmNmIwYTJjY2I5NTU5MWVjNyIsImlhdCI6MTY4OTM3OTQyMywiZXhwIjoxNjg5NDYyMjIzfQ.hT2Ta6pBhDR1vOF7LjcKxofyASDPjcTZtFi9CESKIuA",
-          "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YWQyZWRkMTEwYjBiOGRlZjQ4MTY1ZiIsImlhdCI6MTcwNTg0ODg3NSwiZXhwIjoxNzA2NDUzNjc1fQ.MONgGZKIUzqvq13OAlJvBctxJl1rt5OXMFQeIiZm2Ag"
+          "email": "test5@gmail.com",
+          "name": "test5",
+          "avatarURL": "https://res.cloudinary.com/drfvfno3o/image/upload/v1713304877/avatars/661cfcf810f883d8229047b1.jpg",
+          "gender": "female",
+          "weight": 60,
+          "activeTime": 2,
+          "waterDailyNorma": 3000,
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MWVmMjJjOTYwNGMxYTEwN2E0NGE3OSIsImlhdCI6MTcxMzMwNDEwOCwiZXhwIjoxNzEzMzA3NzA4fQ.qAPRcgNKwuNnRKQfuKed5586WCc0JLJyRoP0M8-g0lE",
+          "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MWVmMjJjOTYwNGMxYTEwN2E0NGE3OSIsImlhdCI6MTcxMzMwNDEwOCwiZXhwIjoxNzEzOTA4OTA4fQ.kcIfr-q08RwBZgFe-2l48TAbITfCnLpSFR2qp3pei0A"
         }
       },
       "GetRefreshCurrentResponse": {
@@ -810,6 +990,101 @@
         "example": {
           "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY0YjFlMjVmNmIwYTJjY2I5NTU5MWVjNyIsImlhdCI6MTY4OTM3OTQyMywiZXhwIjoxNjg5NDYyMjIzfQ.hT2Ta6pBhDR1vOF7LjcKxofyASDPjcTZtFi9CESKIuA",
           "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1YWQyZWRkMTEwYjBiOGRlZjQ4MTY1ZiIsImlhdCI6MTcwNTg0ODg3NSwiZXhwIjoxNzA2NDUzNjc1fQ.MONgGZKIUzqvq13OAlJvBctxJl1rt5OXMFQeIiZm2Ag"
+        }
+      },
+      "EditUserRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User email",
+            "example": "test@gmail.com"
+          },
+          "name": {
+            "type": "string",
+            "description": "User name",
+            "example": "test"
+          },
+          "gender": {
+            "type": "string",
+            "description": "User gender",
+            "example": "female"
+          },
+          "weight": {
+            "type": "number",
+            "description": "User weight",
+            "example": 60
+          },
+          "activeTime": {
+            "type": "number",
+            "description": "User active time",
+            "example": 2
+          },
+          "waterDailyNorma": {
+            "type": "number",
+            "description": "User water daily norma",
+            "example": 3000
+          }
+        },
+        "example": {
+          "email": "test5@gmail.com",
+          "name": "test5",
+          "avatarURL": "https://res.cloudinary.com/drfvfno3o/image/upload/v1713304877/avatars/661cfcf810f883d8229047b1.jpg",
+          "gender": "female",
+          "weight": 60,
+          "activeTime": 2,
+          "waterDailyNorma": 3000
+        }
+      },
+      "EditUserResponse": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User email",
+            "example": "test@gmail.com"
+          },
+          "name": {
+            "type": "string",
+            "description": "User name",
+            "example": "test"
+          },
+          "avatarURL": {
+            "type": "string",
+            "description": "User avatarURL",
+            "example": "https://res.cloudinary.com/drfvfno3o/image/upload/v1713304877/avatars/661cfcf810f883d8229047b1.jpg"
+          },
+          "gender": {
+            "type": "string",
+            "description": "User gender",
+            "example": "female"
+          },
+          "weight": {
+            "type": "number",
+            "description": "User weight",
+            "example": 60
+          },
+          "activeTime": {
+            "type": "number",
+            "description": "User active time",
+            "example": 2
+          },
+          "waterDailyNorma": {
+            "type": "number",
+            "description": "User water daily norma",
+            "example": 3000
+          }
+        },
+        "example": {
+          "email": "test5@gmail.com",
+          "name": "test5",
+          "avatarURL": "https://res.cloudinary.com/drfvfno3o/image/upload/v1713304877/avatars/661cfcf810f883d8229047b1.jpg",
+          "gender": "female",
+          "weight": 60,
+          "activeTime": 2,
+          "waterDailyNorma": 3000,
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MWVmMjJjOTYwNGMxYTEwN2E0NGE3OSIsImlhdCI6MTcxMzMwNDEwOCwiZXhwIjoxNzEzMzA3NzA4fQ.qAPRcgNKwuNnRKQfuKed5586WCc0JLJyRoP0M8-g0lE",
+          "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2MWVmMjJjOTYwNGMxYTEwN2E0NGE3OSIsImlhdCI6MTcxMzMwNDEwOCwiZXhwIjoxNzEzOTA4OTA4fQ.kcIfr-q08RwBZgFe-2l48TAbITfCnLpSFR2qp3pei0A"
         }
       },
       "SignOutResponse": {
