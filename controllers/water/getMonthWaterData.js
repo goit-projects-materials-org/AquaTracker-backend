@@ -20,7 +20,7 @@ const getMonthWaterData = async (req, res) => {
     },
   })
     .sort({ date: 1 })
-    .select('-createdAt -updatedAt -owner');
+    .select('-createdAt -updatedAt');
 
   if (!foundWaterMonthData) {
     throw HttpError(404, `Info for ${date} not found`);

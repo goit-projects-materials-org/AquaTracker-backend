@@ -7,6 +7,10 @@ const updateWater = async (req, res) => {
   const { amount, time } = req.body;
   const { _id: owner } = req.user;
 
+  if (new Date(time) > new Date()) {
+    throw HttpError(400, 'Cannot add water consumption for future time');
+  }
+
   const foundWaterDayData = await Water.findOne({
     owner,
     'consumedWaterDoses._id': ObjectId(id),
@@ -28,8 +32,9 @@ const updateWater = async (req, res) => {
     },
     { new: true },
   );
+  const { createdAt, updatedAt, ...data } = updatedConsumedWaterDose.toObject();
 
-  res.status(200).json(updatedConsumedWaterDose);
+  res.status(200).json(data);
 };
 
 module.exports = updateWater;

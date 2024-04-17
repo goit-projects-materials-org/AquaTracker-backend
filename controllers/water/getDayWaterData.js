@@ -20,12 +20,12 @@ const getDayWaterData = async (req, res) => {
       $gte: startOfDay,
       $lt: endOfDay,
     },
-  });
+  }).select('-createdAt -updatedAt');
 
   if (!foundWaterDayData) {
-        throw HttpError(404, `Info for ${date} not found`);
-    } 
-    
+    throw HttpError(404, `Info for ${date} not found`);
+  }
+
   res.status(200).json(foundWaterDayData);
 };
 

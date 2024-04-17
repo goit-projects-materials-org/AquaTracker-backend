@@ -226,6 +226,10 @@
             "description": "Bad request (invalid request body)",
             "content": {}
           },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
           "404": {
             "description": "Service not found",
             "content": {}
@@ -303,89 +307,18 @@
         }
       }
     },
-    "/books/recommend": {
-      "get": {
-        "tags": ["Book"],
-        "summary": "Get recommend books",
-        "security": [
-          {
-            "Bearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "in": "query",
-            "name": "title",
-            "description": "The title for searching",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "author",
-            "description": "The author for searching",
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "in": "query",
-            "name": "page",
-            "description": "The number page of the recommend books",
-            "schema": {
-              "type": "number",
-              "default": 1
-            }
-          },
-          {
-            "in": "query",
-            "name": "limit",
-            "description": "The limit for the recommend books",
-            "schema": {
-              "type": "number",
-              "default": 10
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/GetRecommendBooksResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {}
-          },
-          "404": {
-            "description": "Not found",
-            "content": {}
-          },
-          "500": {
-            "description": "Server error",
-            "content": {}
-          }
-        }
-      }
-    },
-    "/books/add": {
+    "/water/add": {
       "post": {
-        "tags": ["Book"],
-        "summary": "Add a new book",
+        "tags": ["Water"],
+        "summary": "Add water",
         "security": [{ "Bearer": [] }],
         "requestBody": {
-          "description": "Update object",
+          "description": "Add water object",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AddNewBookRequest"
+                "$ref": "#/components/schemas/AddWaterRequest"
               }
             }
           }
@@ -396,103 +329,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AddNewBookResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request (invalid request body)",
-            "content": {}
-          },
-          "404": {
-            "description": "Service not found",
-            "content": {}
-          },
-          "409": {
-            "description": "Such book already exists",
-            "content": {}
-          },
-          "500": {
-            "description": "Server error",
-            "content": {}
-          }
-        }
-      }
-    },
-    "/books/add/{id}": {
-      "post": {
-        "tags": ["Book"],
-        "summary": "Add a new book from recommend books",
-        "security": [{ "Bearer": [] }],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "description": "Book id",
-            "schema": {
-              "type": "string"
-            },
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AddNewBookResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request (invalid request body)",
-            "content": {}
-          },
-          "404": {
-            "description": "Not found",
-            "content": {}
-          },
-          "409": {
-            "description": "Such book already exists",
-            "content": {}
-          },
-          "500": {
-            "description": "Server error",
-            "content": {}
-          }
-        }
-      }
-    },
-    "/books/remove/{id}": {
-      "delete": {
-        "tags": ["Book"],
-        "summary": "Delete User's book",
-        "security": [
-          {
-            "Bearer": []
-          }
-        ],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "id",
-            "description": "Book id",
-            "schema": {
-              "type": "string"
-            },
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/RemoveBookResponse"
+                  "$ref": "#/components/schemas/AddWaterResponse"
                 }
               }
             }
@@ -502,7 +339,7 @@
             "content": {}
           },
           "401": {
-            "description": "This book not found",
+            "description": "Unauthorized",
             "content": {}
           },
           "404": {
@@ -516,10 +353,10 @@
         }
       }
     },
-    "/books/own": {
-      "get": {
-        "tags": ["Book"],
-        "summary": "Get User's books",
+    "/water/edit/{id}": {
+      "patch": {
+        "tags": ["Water"],
+        "summary": "Edit the water dose",
         "security": [
           {
             "Bearer": []
@@ -527,32 +364,47 @@
         ],
         "parameters": [
           {
-            "in": "query",
-            "name": "status",
-            "description": "The book status",
+            "in": "path",
+            "name": "id",
+            "description": "Water dose id",
             "schema": {
-              "type": "string",
-              "enum": ["unread", "in-progress", "done"]
-            }
+              "type": "string"
+            },
+            "required": true
           }
         ],
+        "requestBody": {
+          "description": "Edit water object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AddWaterRequest"
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
             "description": "Successful operation",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetUsersBooksResponse"
+                  "$ref": "#/components/schemas/AddWaterResponse"
                 }
               }
             }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
           },
           "401": {
             "description": "Unauthorized",
             "content": {}
           },
           "404": {
-            "description": "Not found",
+            "description": "Service not found or Info about this consumed water dose not found",
             "content": {}
           },
           "500": {
@@ -562,102 +414,10 @@
         }
       }
     },
-    "/books/reading/start": {
-      "post": {
-        "tags": ["Book"],
-        "summary": "Save the start of reading the book",
-        "security": [{ "Bearer": [] }],
-        "requestBody": {
-          "description": "Start reading a book object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/StartReadingBookRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/StartReadingBookResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request (invalid request body)",
-            "content": {}
-          },
-          "404": {
-            "description": "Not found",
-            "content": {}
-          },
-          "409": {
-            "description": "This book is already read | You have already started reading this book",
-            "content": {}
-          },
-          "500": {
-            "description": "Server error",
-            "content": {}
-          }
-        }
-      }
-    },
-    "/books/reading/finish": {
-      "post": {
-        "tags": ["Book"],
-        "summary": "Save the finish of reading the book",
-        "security": [{ "Bearer": [] }],
-        "requestBody": {
-          "description": "Finish reading a book object",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/FinishReadingBookRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful operation",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/FinishReadingBookResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request (invalid request body)",
-            "content": {}
-          },
-          "404": {
-            "description": "Not found",
-            "content": {}
-          },
-          "409": {
-            "description": "You haven't started reading this book | This book is already read | The finish page cann't be less than the start page",
-            "content": {}
-          },
-          "500": {
-            "description": "Server error",
-            "content": {}
-          }
-        }
-      }
-    },
-    "/books/reading": {
+    "/water/remove/{id}": {
       "delete": {
-        "tags": ["Book"],
-        "summary": "Delete the reading of the book",
+        "tags": ["Water"],
+        "summary": "Remove the water dose",
         "security": [
           {
             "Bearer": []
@@ -665,18 +425,9 @@
         ],
         "parameters": [
           {
-            "in": "query",
-            "name": "bookId",
-            "description": "Book id",
-            "schema": {
-              "type": "string"
-            },
-            "required": true
-          },
-          {
-            "in": "query",
-            "name": "readingId",
-            "description": "Reading id",
+            "in": "path",
+            "name": "id",
+            "description": "Water dose id",
             "schema": {
               "type": "string"
             },
@@ -689,7 +440,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FinishReadingBookResponse"
+                  "$ref": "#/components/schemas/AddWaterResponse"
                 }
               }
             }
@@ -698,12 +449,12 @@
             "description": "Bad request (invalid request body)",
             "content": {}
           },
-          "404": {
-            "description": "Not found",
+          "401": {
+            "description": "Unauthorized",
             "content": {}
           },
-          "409": {
-            "description": "This book is already read | You haven't finished reading this book",
+          "404": {
+            "description": "Service not found or Info about this consumed water dose not found",
             "content": {}
           },
           "500": {
@@ -713,16 +464,20 @@
         }
       }
     },
-    "/books/{id}": {
+    "/water/day/{date}": {
       "get": {
-        "tags": ["Book"],
-        "summary": "Get info about the book",
-        "security": [{ "Bearer": [] }],
+        "tags": ["Water"],
+        "summary": "Info about consumed water for day",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "parameters": [
           {
             "in": "path",
-            "name": "id",
-            "description": "Book id",
+            "name": "date",
+            "description": "Day of consumption in format YYYY-MM-DD",
             "schema": {
               "type": "string"
             },
@@ -735,7 +490,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FinishReadingBookResponse"
+                  "$ref": "#/components/schemas/AddWaterResponse"
                 }
               }
             }
@@ -744,8 +499,62 @@
             "description": "Bad request (invalid request body)",
             "content": {}
           },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
           "404": {
-            "description": "Not found",
+            "description": "Service not found or Info for date not found",
+            "content": {}
+          },
+          "500": {
+            "description": "Server error",
+            "content": {}
+          }
+        }
+      }
+    },
+    "/water/month/{date}": {
+      "get": {
+        "tags": ["Water"],
+        "summary": "Info about consumed water for month",
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "date",
+            "description": "Month of consumption in format YYYY-MM",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MonthWaterResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request (invalid request body)",
+            "content": {}
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {}
+          },
+          "404": {
+            "description": "Service not found or Info for date not found",
             "content": {}
           },
           "500": {
@@ -921,29 +730,69 @@
             "example": "test@gmail.com"
           },
           "name": {
-            "type": "string",
-            "description": "User name",
-            "example": "test"
+            "anyOf": [
+              {
+                "type": "string",
+                "description": "User name",
+                "example": "test"
+              },
+              {
+                "type": "null",
+                "example": null
+              }
+            ]
           },
           "avatarURL": {
-            "type": "string",
-            "description": "User avatarURL",
-            "example": "https://res.cloudinary.com/drfvfno3o/image/upload/v1713304877/avatars/661cfcf810f883d8229047b1.jpg"
+            "anyOf": [
+              {
+                "type": "string",
+                "description": "User avatarURL",
+                "example": "https://res.cloudinary.com/drfvfno3o/image/upload/v1713304877/avatars/661cfcf810f883d8229047b1.jpg"
+              },
+              {
+                "type": "null",
+                "example": null
+              }
+            ]
           },
           "gender": {
-            "type": "string",
-            "description": "User gender",
-            "example": "female"
+            "anyOf": [
+              {
+                "type": "string",
+                "description": "User gender",
+                "example": "female"
+              },
+              {
+                "type": "null",
+                "example": null
+              }
+            ]
           },
           "weight": {
-            "type": "number",
-            "description": "User weight",
-            "example": 60
+            "anyOf": [
+              {
+                "type": "number",
+                "description": "User weight",
+                "example": 60
+              },
+              {
+                "type": "null",
+                "example": null
+              }
+            ]
           },
           "activeTime": {
-            "type": "number",
-            "description": "User active time",
-            "example": 2
+            "anyOf": [
+              {
+                "type": "number",
+                "description": "User active time",
+                "example": 2
+              },
+              {
+                "type": "null",
+                "example": null
+              }
+            ]
           },
           "waterDailyNorma": {
             "type": "number",
@@ -1045,29 +894,69 @@
             "example": "test@gmail.com"
           },
           "name": {
-            "type": "string",
-            "description": "User name",
-            "example": "test"
+            "anyOf": [
+              {
+                "type": "string",
+                "description": "User name",
+                "example": "test"
+              },
+              {
+                "type": "null",
+                "example": null
+              }
+            ]
           },
           "avatarURL": {
-            "type": "string",
-            "description": "User avatarURL",
-            "example": "https://res.cloudinary.com/drfvfno3o/image/upload/v1713304877/avatars/661cfcf810f883d8229047b1.jpg"
+            "anyOf": [
+              {
+                "type": "string",
+                "description": "User avatarURL",
+                "example": "https://res.cloudinary.com/drfvfno3o/image/upload/v1713304877/avatars/661cfcf810f883d8229047b1.jpg"
+              },
+              {
+                "type": "null",
+                "example": null
+              }
+            ]
           },
           "gender": {
-            "type": "string",
-            "description": "User gender",
-            "example": "female"
+            "anyOf": [
+              {
+                "type": "string",
+                "description": "User gender",
+                "example": "female"
+              },
+              {
+                "type": "null",
+                "example": null
+              }
+            ]
           },
           "weight": {
-            "type": "number",
-            "description": "User weight",
-            "example": 60
+            "anyOf": [
+              {
+                "type": "number",
+                "description": "User weight",
+                "example": 60
+              },
+              {
+                "type": "null",
+                "example": null
+              }
+            ]
           },
           "activeTime": {
-            "type": "number",
-            "description": "User active time",
-            "example": 2
+            "anyOf": [
+              {
+                "type": "number",
+                "description": "User active time",
+                "example": 2
+              },
+              {
+                "type": "null",
+                "example": null
+              }
+            ]
           },
           "waterDailyNorma": {
             "type": "number",
@@ -1100,254 +989,61 @@
           "message": "Sign out success"
         }
       },
-      "GetRecommendBooksResponse": {
+      "AddWaterRequest": {
         "type": "object",
+        "required": ["amount", "time"],
         "properties": {
-          "results": {
-            "type": "array",
-            "items": {
-              "type": "object",
-              "properties": {
-                "_id": {
-                  "type": "string",
-                  "description": "Book id",
-                  "example": "654fc4d00a563c69b09895ef"
-                },
-                "title": {
-                  "type": "string",
-                  "description": "Book title",
-                  "example": "Lovers of Justice"
-                },
-                "author": {
-                  "type": "string",
-                  "description": "Book author",
-                  "example": "Yuri Andrukhovych"
-                },
-                "imageUrl": {
-                  "type": "string",
-                  "description": "Book image url",
-                  "example": "https://res.cloudinary.com/drfvfno3o/image/upload/v1699726543/books/1.webp"
-                },
-                "totalPages": {
-                  "type": "number",
-                  "description": "Total amount of pages",
-                  "example": 304
-                },
-                "recommend": {
-                  "type": "boolean",
-                  "description": "Indicates whether the book is recommended or not",
-                  "example": true
-                }
-              }
-            }
-          },
-          "totalPages": {
-            "type": "number"
-          },
-          "page": {
-            "type": "number"
-          },
-          "perPage": {
-            "type": "number"
-          }
-        },
-        "example": {
-          "results": [
-            {
-              "_id": "654fc4d00a563c69b09895ef",
-              "title": "Lovers of Justice",
-              "author": "Yuri Andrukhovych",
-              "imageUrl": "https://res.cloudinary.com/drfvfno3o/image/upload/v1699726543/books/1.webp",
-              "totalPages": 304,
-              "recommend": true
-            },
-            {
-              "_id": "654fc5064f56fe7a8d0e19eb",
-              "title": "It doesn't hurt",
-              "author": "Kateryna Babkina",
-              "imageUrl": "https://res.cloudinary.com/drfvfno3o/image/upload/v1699726598/books/2.png",
-              "totalPages": 72,
-              "recommend": true
-            }
-          ],
-          "totalPages": 4,
-          "page": 1,
-          "perPage": 2
-        }
-      },
-      "AddNewBookRequest": {
-        "type": "object",
-        "required": ["title", "author", "totalPages"],
-        "properties": {
-          "title": {
-            "description": "Book title",
-            "type": "string",
-            "format": "json",
-            "example": "Book New Dark Ages. Book 1: The Colony"
-          },
-          "author": {
-            "description": "Book author",
-            "type": "string",
-            "format": "json",
-            "example": "Max Kidruk"
-          },
-          "totalPages": {
-            "description": "Total amount of pages",
+          "amount": {
+            "description": "Water amount",
             "type": "number",
             "format": "json",
-            "example": 904
+            "example": 250
+          },
+          "time": {
+            "description": "Time of consumption",
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-04-17T12:30:45Z"
           }
         }
       },
-      "AddNewBookResponse": {
+      "AddWaterResponse": {
         "type": "object",
         "properties": {
           "_id": {
             "type": "string",
-            "description": "Book id",
+            "description": "Water day id",
             "example": "654fde408f25db3803669af2"
           },
-          "title": {
+          "date": {
+            "description": "Day of consumption",
             "type": "string",
-            "description": "Book title",
-            "example": "Book New Dark Ages. Book 1: The Colony"
+            "format": "date-time",
+            "example": "2024-04-17T12:30:45Z"
           },
-          "author": {
-            "type": "string",
-            "description": "Book author",
-            "example": "Max Kidruk"
-          },
-          "imageUrl": {
-            "anyOf": [
-              {
-                "type": "string",
-                "description": "Book image url",
-                "example": "https://res.cloudinary.com/drfvfno3o/image/upload/v1699733055/books/8.webp"
-              },
-              {
-                "type": "null",
-                "example": null
-              }
-            ]
-          },
-          "totalPages": {
+          "consumedAmountWater": {
             "type": "number",
-            "description": "Total amount of pages",
-            "example": 904
+            "description": "Consumed amount water for day",
+            "example": 500
           },
-          "status": {
-            "type": "string",
-            "description": "Book status",
-            "example": "unread"
+          "waterDailyNorma": {
+            "type": "number",
+            "description": "Water daily norma for user",
+            "example": 2500
           },
-          "progress": {
+          "consumedWaterDoses": {
             "type": "array",
-            "description": "Information on the progress of reading the book",
-            "example": []
-          },
-          "owner": {
-            "type": "string",
-            "description": "User id",
-            "example": "654f5eedca10dbb094e5c197"
-          }
-        },
-        "example": {
-          "_id": "654fde408f25db3803669af2",
-          "title": "Book New Dark Ages. Book 1: The Colony",
-          "author": "Max Kidruk",
-          "imageUrl": "https://res.cloudinary.com/drfvfno3o/image/upload/v1699733055/books/8.webp",
-          "totalPages": 904,
-          "status": "unread",
-          "owner": "654f5eedca10dbb094e5c197",
-          "progress": []
-        }
-      },
-      "RemoveBookResponse": {
-        "type": "object",
-        "properties": {
-          "_id": {
-            "type": "string",
-            "description": "Book id",
-            "example": "6552a2e9729403a570ead40c"
-          },
-          "message": {
-            "type": "string",
-            "description": "Success message",
-            "example": "This book was deleted"
-          }
-        },
-        "example": {
-          "message": "This book was deleted",
-          "id": "6552a2e9729403a570ead40c"
-        }
-      },
-      "StartReadingBookRequest": {
-        "type": "object",
-        "required": ["id", "page"],
-        "properties": {
-          "id": {
-            "description": "Book id",
-            "type": "string",
-            "format": "json",
-            "example": "654f747c01dbf90a6bd6b854"
-          },
-          "page": {
-            "description": "Start page of reading the book",
-            "type": "number",
-            "format": "json",
-            "example": 1
-          }
-        }
-      },
-      "StartReadingBookResponse": {
-        "type": "object",
-        "properties": {
-          "_id": {
-            "type": "string",
-            "description": "Book id",
-            "example": "654fde408f25db3803669af2"
-          },
-          "title": {
-            "type": "string",
-            "description": "Book title",
-            "example": "Book New Dark Ages. Book 1: The Colony"
-          },
-          "author": {
-            "type": "string",
-            "description": "Book author",
-            "example": "Max Kidruk"
-          },
-          "imageUrl": {
-            "type": "string",
-            "description": "Book image url",
-            "example": "https://res.cloudinary.com/drfvfno3o/image/upload/v1699733055/books/8.webp"
-          },
-          "totalPages": {
-            "type": "number",
-            "description": "Total amount of pages",
-            "example": 904
-          },
-          "status": {
-            "type": "string",
-            "description": "Book status",
-            "example": "in-progress"
-          },
-          "progress": {
-            "type": "array",
-            "description": "Information on the progress of reading the book",
+            "description": "Information about consumed water",
             "example": [
               {
-                "startPage": 1,
-                "startReading": "2023-11-11T22:49:29.590Z",
-                "finishPage": 4,
-                "finishReading": "2023-11-11T22:53:34.959Z",
-                "speed": 44,
-                "status": "inactive"
+                "amount": 250,
+                "time": "2024-04-17T12:30:45.000Z",
+                "_id": "661f913e10aa41a9b53c95ad"
               },
               {
-                "startPage": 5,
-                "startReading": "2023-11-11T22:53:50.853Z",
-                "status": "active"
+                "amount": 250,
+                "time": "2024-04-17T12:30:45.000Z",
+                "_id": "661f931510aa41a9b53c95b3"
               }
             ]
           },
@@ -1358,271 +1054,61 @@
           }
         },
         "example": {
-          "_id": "654fde408f25db3803669af2",
-          "title": "Book New Dark Ages. Book 1: The Colony",
-          "author": "Max Kidruk",
-          "imageUrl": "https://res.cloudinary.com/drfvfno3o/image/upload/v1699733055/books/8.webp",
-          "totalPages": 904,
-          "status": "in-progress",
-          "owner": "654f5eedca10dbb094e5c197",
-          "progress": [
+          "_id": "661f913e10aa41a9b53c95ac",
+          "date": "2024-04-17T12:30:45.000Z",
+          "consumedAmountWater": 750,
+          "waterDailyNorma": 2230,
+          "consumedWaterDoses": [
             {
-              "startPage": 1,
-              "startReading": "2023-11-11T22:49:29.590Z",
-              "finishPage": 4,
-              "finishReading": "2023-11-11T22:53:34.959Z",
-              "speed": 44,
-              "status": "inactive"
+              "amount": 250,
+              "time": "2024-04-17T12:30:45.000Z",
+              "_id": "661f913e10aa41a9b53c95ad"
             },
             {
-              "startPage": 5,
-              "startReading": "2023-11-11T22:53:50.853Z",
-              "finishPage": 7,
-              "finishReading": "2023-11-11T22:54:59.914Z",
-              "speed": 105,
-              "status": "inactive"
+              "amount": 250,
+              "time": "2024-04-17T12:30:45.000Z",
+              "_id": "661f931510aa41a9b53c95b3"
             },
             {
-              "startPage": 8,
-              "startReading": "2023-11-11T22:56:44.674Z",
-              "status": "active"
-            }
-          ]
-        }
-      },
-      "FinishReadingBookRequest": {
-        "type": "object",
-        "required": ["id", "page"],
-        "properties": {
-          "id": {
-            "description": "Book id",
-            "type": "string",
-            "format": "json",
-            "example": "654f747c01dbf90a6bd6b854"
-          },
-          "page": {
-            "description": "Final page of reading the book",
-            "type": "number",
-            "format": "json",
-            "example": 10
-          }
-        }
-      },
-      "FinishReadingBookResponse": {
-        "type": "object",
-        "properties": {
-          "_id": {
-            "type": "string",
-            "description": "Book id",
-            "example": "654fde408f25db3803669af2"
-          },
-          "title": {
-            "type": "string",
-            "description": "Book title",
-            "example": "Book New Dark Ages. Book 1: The Colony"
-          },
-          "author": {
-            "type": "string",
-            "description": "Book author",
-            "example": "Max Kidruk"
-          },
-          "imageUrl": {
-            "type": "string",
-            "description": "Book image url",
-            "example": "https://res.cloudinary.com/drfvfno3o/image/upload/v1699733055/books/8.webp"
-          },
-          "totalPages": {
-            "type": "number",
-            "description": "Total amount of pages",
-            "example": 904
-          },
-          "status": {
-            "type": "string",
-            "description": "Book status",
-            "example": "in-progress"
-          },
-          "progress": {
-            "type": "array",
-            "description": "Information on the progress of reading the book",
-            "example": [
-              {
-                "startPage": 1,
-                "startReading": "2023-11-11T22:49:29.590Z",
-                "finishPage": 7,
-                "finishReading": "2023-11-11T22:53:34.959Z",
-                "speed": 44,
-                "status": "inactive"
-              },
-              {
-                "startPage": 8,
-                "startReading": "2023-11-11T22:56:44.674Z",
-                "finishPage": 10,
-                "finishReading": "2023-11-11T23:02:29.046Z",
-                "speed": 21,
-                "status": "inactive"
-              }
-            ]
-          },
-          "owner": {
-            "type": "string",
-            "description": "User id",
-            "example": "654f5eedca10dbb094e5c197"
-          },
-          "timeLeftToRead": {
-            "type": "object",
-            "properties": {
-              "hours": {
-                "type": "number",
-                "description": "Amount of hours",
-                "example": 16
-              },
-              "minutes": {
-                "type": "number",
-                "description": "Amount of minutes",
-                "example": 30
-              },
-              "seconds": {
-                "type": "number",
-                "description": "Amount of seconds",
-                "example": 18
-              }
-            }
-          }
-        },
-        "example": {
-          "_id": "654fde408f25db3803669af2",
-          "title": "Book New Dark Ages. Book 1: The Colony",
-          "author": "Max Kidruk",
-          "imageUrl": "https://res.cloudinary.com/drfvfno3o/image/upload/v1699733055/books/8.webp",
-          "totalPages": 904,
-          "status": "in-progress",
-          "owner": "654f5eedca10dbb094e5c197",
-          "progress": [
-            {
-              "startPage": 1,
-              "startReading": "2023-11-11T22:49:29.590Z",
-              "finishPage": 74,
-              "finishReading": "2023-11-11T22:53:34.959Z",
-              "speed": 44,
-              "status": "inactive"
-            },
-            {
-              "startPage": 8,
-              "startReading": "2023-11-11T22:56:44.674Z",
-              "finishPage": 10,
-              "finishReading": "2023-11-11T23:02:29.046Z",
-              "speed": 21,
-              "status": "inactive"
+              "amount": 250,
+              "time": "2024-04-17T12:30:45.000Z",
+              "_id": "661f9640f287375305b28830"
             }
           ],
-          "timeLeftToRead": {
-            "hours": 16,
-            "minutes": 30,
-            "seconds": 18
-          }
+          "owner": "661cfcf810f883d8229047b1"
         }
       },
-      "GetUsersBooksResponse": {
+      "MonthWaterResponse": {
         "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "_id": {
-              "type": "string",
-              "description": "Book id",
-              "example": "654fde408f25db3803669af2"
-            },
-            "title": {
-              "type": "string",
-              "description": "Book title",
-              "example": "Book New Dark Ages. Book 1: The Colony"
-            },
-            "author": {
-              "type": "string",
-              "description": "Book author",
-              "example": "Max Kidruk"
-            },
-            "imageUrl": {
-              "type": "string",
-              "description": "Book image url",
-              "example": "https://res.cloudinary.com/drfvfno3o/image/upload/v1699733055/books/8.webp"
-            },
-            "totalPages": {
-              "type": "number",
-              "description": "Total amount of pages",
-              "example": 904
-            },
-            "status": {
-              "type": "string",
-              "description": "Book status",
-              "example": "in-progress"
-            },
-            "progress": {
-              "type": "array",
-              "description": "Information on the progress of reading the book",
-              "example": [
-                {
-                  "startPage": 1,
-                  "startReading": "2023-11-11T22:49:29.590Z",
-                  "finishPage": 7,
-                  "finishReading": "2023-11-11T22:53:34.959Z",
-                  "speed": 44,
-                  "status": "inactive"
-                },
-                {
-                  "startPage": 8,
-                  "startReading": "2023-11-11T22:56:44.674Z",
-                  "finishPage": 10,
-                  "finishReading": "2023-11-11T23:02:29.046Z",
-                  "speed": 21,
-                  "status": "inactive"
-                }
-              ]
-            },
-            "owner": {
-              "type": "string",
-              "description": "User id",
-              "example": "654f5eedca10dbb094e5c197"
-            }
-          }
-        },
+        "description": "Information about consumed water for month",
         "example": [
           {
-            "_id": "654fe498c4972d030d94db5e",
-            "title": "Lovers of Justice",
-            "author": "Yuri Andrukhovych",
-            "imageUrl": "https://res.cloudinary.com/drfvfno3o/image/upload/v1699726543/books/1.webp",
-            "totalPages": 304,
-            "status": "in-progress",
-            "owner": "654f5eedca10dbb094e5c197",
-            "progress": [
+            "_id": "661faad80ea4406ee7d08548",
+            "date": "2024-04-07T10:30:45.000Z",
+            "consumedAmountWater": 250,
+            "waterDailyNorma": 2000,
+            "consumedWaterDoses": [
               {
-                "startPage": 1,
-                "startReading": "2023-11-11T22:49:29.590Z",
-                "finishPage": 7,
-                "finishReading": "2023-11-11T22:53:34.959Z",
-                "speed": 44,
-                "status": "inactive"
-              },
-              {
-                "startPage": 8,
-                "startReading": "2023-11-11T22:56:44.674Z",
-                "finishPage": 10,
-                "finishReading": "2023-11-11T23:02:29.046Z",
-                "speed": 21,
-                "status": "inactive"
+                "amount": 250,
+                "time": "2024-04-17T12:30:45.000Z",
+                "_id": "661faad80ea4406ee7d08549"
               }
-            ]
+            ],
+            "owner": "661fa9617f3e8939e7f9a6fd"
           },
           {
-            "_id": "654fe854548f3b992ad6963c",
-            "title": "There is land beyond Perekop",
-            "author": "Anastasiia Levkova",
-            "imageUrl": "https://res.cloudinary.com/drfvfno3o/image/upload/v1699735635/books/654f5eedca10dbb094e5c197_There_is_land_beyond_Perekop.webp",
-            "totalPages": 392,
-            "status": "unread",
-            "owner": "654f5eedca10dbb094e5c197",
-            "progress": []
+            "_id": "661faac61f6950abe21ab4cf",
+            "date": "2024-04-08T10:30:45.000Z",
+            "consumedAmountWater": 250,
+            "waterDailyNorma": 2000,
+            "consumedWaterDoses": [
+              {
+                "amount": 250,
+                "time": "2024-04-08T10:30:45.000Z",
+                "_id": "661faac61f6950abe21ab4d0"
+              }
+            ],
+            "owner": "661fa9617f3e8939e7f9a6fd"
           }
         ]
       }
