@@ -1,12 +1,12 @@
-const {  CtrlWrapper } = require('../../helpers');
-const signup = require('./signup');
-const signin = require('./signin');
-const currentUser = require('./currentUser');
-const updateUser = require('./updateUser');
-const refreshCurrentUser = require('./refreshCurrentUser');
-const signout = require('./signout');
+import { CtrlWrapper } from '../../helpers/CtrlWrapper.js';
+import signup from './signup.js';
+import signin from './signin.js';
+import currentUser from './currentUser.js';
+import updateUser from './updateUser.js';
+import refreshCurrentUser from './refreshCurrentUser.js';
+import signout from './signout.js';
 
-module.exports = {
+export default {
   signup: CtrlWrapper(signup),
   signin: CtrlWrapper(signin),
   currentUser: CtrlWrapper(currentUser),

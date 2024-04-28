@@ -1,17 +1,11 @@
-const { handleMangooseError} = require('../helpers');
-const { Schema, model } = require('mongoose');
-const Joi = require('joi');
-const { timeUTCRegexp } = require('../constants/regex');
+import { Schema, model } from 'mongoose';
+import Joi from 'joi';
+import { handleMangooseError } from '../helpers/handleMangooseError.js';
 
 const waterSchema = Schema(
   {
     date: {
       type: Date,
-      required: true,
-      match: timeUTCRegexp,
-    },
-    consumedAmountWater: {
-      type: Number,
       required: true,
     },
     waterDailyNorma: {
@@ -20,23 +14,10 @@ const waterSchema = Schema(
       max: 5000,
       required: true,
     },
-    consumedWaterDoses: {
-      type: [
-        {
-          amount: {
-            type: Number,
-            min: 0.1,
-            max: 5000,
-            required: true,
-          },
-          time: {
-            type: Date,
-            required: true,
-            match: timeUTCRegexp,
-          },
-        },
-      ],
-      default: [],
+    amount: {
+      type: Number,
+      min: 0.1,
+      max: 5000,
       required: true,
     },
     owner: {
@@ -56,10 +37,9 @@ const addWaterSchema = Joi.object({
     'number.min': 'The amount must be greater than 0',
     'number.max': 'The amount must be less than 5000',
   }),
-  time: Joi.string().required().regex(timeUTCRegexp, { invert: false }).messages({
-    'string.base': 'The time must be a string.',
-    'any.required': 'The time field is required.',
-    'string.pattern.base': 'The time must be in UTC format.',
+  date: Joi.date().iso().required().messages({
+    'date.format': 'The date shoud be a valid ISO 8601 date format',
+    'any.required': 'The date field is required.',
   }),
 });
 const updateWaterSchema = Joi.object({
@@ -68,14 +48,11 @@ const updateWaterSchema = Joi.object({
     'number.min': 'The amount must be greater than 0',
     'number.max': 'The amount must be less than 5000',
   }),
-  time: Joi.string().required().regex(timeUTCRegexp, { invert: false }).messages({
-    'string.base': 'The time must be a string.',
-    'any.required': 'The time field is required.',
-    'string.pattern.base': 'The time must be in UTC format.',
+  date: Joi.date().iso().required().messages({
+    'date.format': 'The date shoud be a valid ISO 8601 date format',
+    'any.required': 'The date field is required.',
   }),
 });
 
-const Water = model('water', waterSchema);
-const schemas = { addWaterSchema, updateWaterSchema };
-
-module.exports = { Water, schemas };
+export const Water = model('water', waterSchema);
+export const schemas = { addWaterSchema, updateWaterSchema };

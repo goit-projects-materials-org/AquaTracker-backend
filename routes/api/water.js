@@ -1,13 +1,18 @@
-const express = require('express');
-const ctrl = require('../../controllers/water');
-const { validateBody, isValidId, isValidDayDate, isValidMonthDate, authenticate } = require('../../middlewares');
-const { schemas } = require('../../models/water');
+import express from 'express';
+import ctrl from '../../controllers/water/index.js';
+import { validateBody } from '../../middlewares/validateBody.js';
+import { authenticate } from '../../middlewares/authenticate.js';
+import { isValidId } from '../../middlewares/isValidId.js';
+import { schemas } from '../../models/water.js';
+
 const router = express.Router();
 
-router.post('/add', authenticate, validateBody(schemas.addWaterSchema), ctrl.addWater);
-router.patch('/edit/:id', authenticate, isValidId, validateBody(schemas.updateWaterSchema), ctrl.updateWater);
-router.delete('/remove/:id', authenticate, isValidId, ctrl.removeWater);
-router.get('/day/:date', authenticate, isValidDayDate, ctrl.getDayWaterData);
-router.get('/month/:date', authenticate, isValidMonthDate, ctrl.getMonthWaterData);
+router.use(authenticate);
 
-module.exports = router;
+router.post('/add', validateBody(schemas.addWaterSchema), ctrl.addWater);
+router.patch('/edit/:id',  isValidId, validateBody(schemas.updateWaterSchema), ctrl.updateWater);
+router.delete('/remove/:id', isValidId, ctrl.removeWater);
+router.get('/day/:date', ctrl.getDayWaterData);
+router.get('/month/:date', ctrl.getMonthWaterData);
+
+export default router;

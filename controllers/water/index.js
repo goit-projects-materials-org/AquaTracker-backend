@@ -1,15 +1,14 @@
-const { CtrlWrapper } = require('../../helpers');
-const addWater = require('./addWater');
-const updateWater = require('./updateWater');
-const removeWater = require('./removeWater');
-const getDayWaterData = require('./getDayWaterData');
-const getMonthWaterData = require('./getMonthWaterData');
+import { CtrlWrapper } from '../../helpers/CtrlWrapper.js';
+import addWater from './addWater.js';
+import updateWater from './updateWater.js';
+import removeWater from './removeWater.js';
+import getDayWaterData from './getDayWaterData.js';
+import getMonthWaterData from './getMonthWaterData.js';
 
-
-module.exports = {
+export default {
   addWater: CtrlWrapper(addWater),
   updateWater: CtrlWrapper(updateWater),
   removeWater: CtrlWrapper(removeWater),
   getDayWaterData: CtrlWrapper(getDayWaterData),
-  getMonthWaterData: CtrlWrapper(getMonthWaterData)
+  getMonthWaterData: CtrlWrapper(getMonthWaterData),
 };

@@ -3,4 +3,4 @@ const currentUser = async (req, res) => {
   res.json({ name, email, avatarURL, gender, weight, activeTime, waterDailyNorma, token, refreshToken });
 };
 
-module.exports = currentUser;
+export default currentUser;

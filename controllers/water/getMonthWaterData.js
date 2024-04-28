@@ -1,32 +1,36 @@
-const { Water } = require('../../models/water');
-const { HttpError } = require('../../helpers');
+import { Water } from '../../models/water.js';
+import { HttpError } from '../../helpers/HttpError.js';
 
 const getMonthWaterData = async (req, res) => {
-  const { date } = req.params;
   const { _id: owner } = req.user;
+  const date = new Date(req.params.date);
+  const year = date.getFullYear();
+  const month = date.getMonth();
 
-  const [year, month] = date.split('-');
+  const startDayOfMonth = new Date(Date.UTC(year, month, 1));
+  startDayOfMonth.setMinutes(startDayOfMonth.getMinutes() + date.getTimezoneOffset());
+  const utcStart = startDayOfMonth.toISOString();
 
-  const utcDate = new Date(Date.UTC(year, month - 1, 1));
-
-  const lastDayOfMonth = new Date(Date.UTC(year, month, 0));
+  const lastDayOfMonth = new Date(Date.UTC(year, month + 1, 0));
   lastDayOfMonth.setUTCHours(23, 59, 59, 999);
+  lastDayOfMonth.setMinutes(lastDayOfMonth.getMinutes() + date.getTimezoneOffset());
+  const utcEnd = lastDayOfMonth.toISOString();
 
   const foundWaterMonthData = await Water.find({
     owner,
     date: {
-      $gte: utcDate,
-      $lt: lastDayOfMonth,
+      $gte: utcStart,
+      $lt: utcEnd,
     },
   })
     .sort({ date: 1 })
     .select('-createdAt -updatedAt');
 
   if (!foundWaterMonthData) {
-    throw HttpError(404, `Info for ${date} not found`);
+    throw HttpError(404, `Info for this month not found`);
   }
 
   res.status(200).json(foundWaterMonthData);
 };
 
-module.exports = getMonthWaterData;
+export default getMonthWaterData;

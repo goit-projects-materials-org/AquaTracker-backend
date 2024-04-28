@@ -1,6 +1,6 @@
-const mongoose = require('mongoose');
-require('dotenv').config();
-const app = require('./app');
+import mongoose from 'mongoose';
+// require('dotenv').config();
+import app from './app.js';
 
 mongoose.set('strictQuery', true);
 

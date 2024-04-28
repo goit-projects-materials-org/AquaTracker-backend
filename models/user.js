@@ -1,7 +1,7 @@
-const { handleMangooseError } = require('../helpers');
-const { Schema, model } = require('mongoose');
-const Joi = require('joi');
-const { emailRegexp } = require('../constants/regex');
+import { Schema, model } from 'mongoose';
+import Joi from 'joi';
+import { handleMangooseError } from '../helpers/handleMangooseError.js';
+import { emailRegexp } from '../constants/regex.js';
 
 const userSchema = Schema(
   {
@@ -47,7 +47,7 @@ const userSchema = Schema(
     waterDailyNorma: {
       type: Number,
       min: 0.1,
-      max:5000,
+      max: 5000,
       default: 2000,
     },
     password: {
@@ -80,7 +80,7 @@ const signupSchema = Joi.object({
     'string.base': 'The password must be a string.',
     'any.required': 'The password field is required.',
     'string.empty': 'The password must not be empty.',
-    'string.min': 'The password must be not less 7 symbols.'
+    'string.min': 'The password must be not less 7 symbols.',
   }),
 });
 const signinSchema = Joi.object({
@@ -94,7 +94,7 @@ const signinSchema = Joi.object({
     'string.base': 'The password must be a string.',
     'any.required': 'The password field is required.',
     'string.empty': 'The password must not be empty.',
-    'string.min': 'The password must be not less 7 symbols.'
+    'string.min': 'The password must be not less 7 symbols.',
   }),
 });
 const updateUserSchema = Joi.object({
@@ -124,10 +124,11 @@ const updateUserSchema = Joi.object({
     'number.min': 'The waterDailyNorma must be greater than 0',
     'number.max': 'The waterDailyNorma must be less than 5000',
   }),
+  date: Joi.date().iso().required().messages({
+    'date.format': 'The date shoud be a valid ISO 8601 date format',
+    'any.required': 'The date field is required.',
+  }),
 });
 
-
-const User = model('user', userSchema);
-const schemas = { signupSchema, signinSchema, updateUserSchema };
-
-module.exports = { User, schemas };
+export const User = model('user', userSchema);
+export const schemas = { signupSchema, signinSchema, updateUserSchema };

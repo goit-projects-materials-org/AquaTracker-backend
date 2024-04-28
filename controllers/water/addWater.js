@@ -1,53 +1,20 @@
-const { Water } = require('../../models/water');
-const { HttpError } = require('../../helpers');
+import { Water } from '../../models/water.js';
 
 const addWater = async (req, res) => {
-  const { amount, time } = req.body;
+  const { amount, date } = req.body;
   const { _id: owner } = req.user;
 
-  if (new Date(time) > new Date()) {
-    throw HttpError(400, 'Cannot add water consumption for future time');
-  }
-
-  const startOfDay = new Date(time);
-  startOfDay.setUTCHours(0, 0, 0, 0);
-  const endOfDay = new Date(time);
-  endOfDay.setUTCHours(23, 59, 59, 999);
-
-  let data;
-
-  const foundWaterDayData = await Water.findOne({
+  const newWaterNotice = {
+    date,
+    waterDailyNorma: req.user.waterDailyNorma,
+    amount,
     owner,
-    date: {
-      $gte: startOfDay,
-      $lt: endOfDay,
-    },
-  });
+  };
 
-  if (foundWaterDayData) {
-    data = await Water.findByIdAndUpdate(
-      foundWaterDayData._id,
-      {
-        $inc: { consumedAmountWater: +amount },
-        $push: { consumedWaterDoses: { amount, time } },
-      },
-      { new: true },
-    ).select('-createdAt -updatedAt');
-  } else {
-    const newWaterDay = {
-      date: time,
-      consumedAmountWater: amount,
-      waterDailyNorma: req.user.waterDailyNorma,
-      consumedWaterDoses: [{ amount, time }],
-      owner,
-    };
+  const createdWaterNotice = await Water.create(newWaterNotice);
+  const { createdAt, updatedAt, ...waterNotice } = createdWaterNotice.toObject();
 
-    const createdWater = await Water.create(newWaterDay);
-    const { createdAt, updatedAt, ...water } = createdWater.toObject();
-    data = water;
-  }
-
-  res.status(200).json(data);
+  res.status(200).json(waterNotice);
 };
 
-module.exports = addWater;
+export default addWater;

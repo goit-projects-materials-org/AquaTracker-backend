@@ -7,7 +7,7 @@
   },
   "consumes": ["application/json"],
   "produces": ["application/json"],
-  "servers": [{ "url": "http://localhost:7003/api" }],
+  "servers": [{ "url": "http://localhost:6003/api" }],
   "tags": [
     {
       "name": "Auth",
@@ -195,6 +195,12 @@
                     "max": 5000,
                     "format": "json",
                     "example": 2000
+                  },
+                  "date": {
+                    "description": "Date",
+                    "type": "string",
+                    "format": "date-time",
+                    "example": "2024-04-28T17:42:21.903Z"
                   },
                   "avatar": {
                     "description": "Avatar file",
@@ -477,9 +483,11 @@
           {
             "in": "path",
             "name": "date",
-            "description": "Day of consumption in format YYYY-MM-DD",
+            "description": "Date of consumption in ISO 8601 format",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "date-time",
+              "default": "2024-04-28T17:42:21.903Z"
             },
             "required": true
           }
@@ -490,7 +498,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AddWaterResponse"
+                  "$ref": "#/components/schemas/GetDayWaterResponse"
                 }
               }
             }
@@ -527,9 +535,11 @@
           {
             "in": "path",
             "name": "date",
-            "description": "Month of consumption in format YYYY-MM",
+            "description": "Date of consumption in ISO 8601 format",
             "schema": {
-              "type": "string"
+              "type": "string",
+              "format": "date-time",
+              "default": "2024-04-28T17:42:21.903Z"
             },
             "required": true
           }
@@ -540,7 +550,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MonthWaterResponse"
+                  "$ref": "#/components/schemas/GetMonthWaterResponse"
                 }
               }
             }
@@ -991,7 +1001,7 @@
       },
       "AddWaterRequest": {
         "type": "object",
-        "required": ["amount", "time"],
+        "required": ["amount", "date"],
         "properties": {
           "amount": {
             "description": "Water amount",
@@ -999,11 +1009,11 @@
             "format": "json",
             "example": 250
           },
-          "time": {
-            "description": "Time of consumption",
+          "date": {
+            "description": "Date",
             "type": "string",
             "format": "date-time",
-            "example": "2024-04-17T12:30:45Z"
+            "example": "2024-04-28T17:42:21.903Z"
           }
         }
       },
@@ -1013,18 +1023,51 @@
           "_id": {
             "type": "string",
             "description": "Water day id",
-            "example": "654fde408f25db3803669af2"
+            "example": "662e90cc4221a6bcc4508e63"
           },
           "date": {
-            "description": "Day of consumption",
+            "description": "Date",
             "type": "string",
             "format": "date-time",
-            "example": "2024-04-17T12:30:45Z"
+            "example": "2024-04-28T17:42:21.903Z"
+          },
+          "waterDailyNorma": {
+            "type": "number",
+            "description": "Water daily norma for user",
+            "example": 2500
+          },
+          "amount": {
+            "type": "number",
+            "description": "Consumed amount of water",
+            "example": 250
+          },
+          "owner": {
+            "type": "string",
+            "description": "User id",
+            "example": "662e8d7ca65df5fa1d92229e"
+          }
+        },
+        "example": {
+          "_id": "662e90cc4221a6bcc4508e63",
+          "date": "2024-04-28T17:42:21.903Z",
+          "amount": 250,
+          "waterDailyNorma": 2500,
+          "owner": "662e8d7ca65df5fa1d92229e"
+        }
+      },
+      "GetDayWaterResponse": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "description": "Date",
+            "type": "string",
+            "format": "date-time",
+            "example": "2024-04-28T17:42:21.903Z"
           },
           "consumedAmountWater": {
             "type": "number",
-            "description": "Consumed amount water for day",
-            "example": 500
+            "description": "Amount of consumed water for this day",
+            "example": 2500
           },
           "waterDailyNorma": {
             "type": "number",
@@ -1033,81 +1076,76 @@
           },
           "consumedWaterDoses": {
             "type": "array",
-            "description": "Information about consumed water",
-            "example": [
-              {
-                "amount": 250,
-                "time": "2024-04-17T12:30:45.000Z",
-                "_id": "661f913e10aa41a9b53c95ad"
-              },
-              {
-                "amount": 250,
-                "time": "2024-04-17T12:30:45.000Z",
-                "_id": "661f931510aa41a9b53c95b3"
+            "items": {
+              "type": "object",
+              "properties": {
+                "_id": {
+                  "type": "string",
+                  "description": "Id of consumed water notice",
+                  "example": "662e93159f74e6c3f7e61fbb"
+                },
+                "date": {
+                  "description": "Date",
+                  "type": "string",
+                  "format": "date-time",
+                  "example": "2024-04-28T17:42:21.903Z"
+                },
+                "waterDailyNorma": {
+                  "type": "number",
+                  "description": "Water daily norma for user",
+                  "example": 2500
+                },
+                "amount": {
+                  "type": "number",
+                  "description": "Amount of consumed water notice",
+                  "example": 250
+                },
+                "owner": {
+                  "type": "string",
+                  "description": "User id",
+                  "example": "662e8d7ca65df5fa1d92229e"
+                }
               }
-            ]
+            }
           },
           "owner": {
             "type": "string",
             "description": "User id",
-            "example": "654f5eedca10dbb094e5c197"
+            "example": "662e8d7ca65df5fa1d92229e"
           }
         },
         "example": {
-          "_id": "661f913e10aa41a9b53c95ac",
-          "date": "2024-04-17T12:30:45.000Z",
-          "consumedAmountWater": 750,
-          "waterDailyNorma": 2230,
+          "date": "2024-04-28T19:42:21.903Z",
+          "consumedAmountWater": 250,
+          "waterDailyNorma": 2000,
           "consumedWaterDoses": [
             {
+              "_id": "662e93159f74e6c3f7e61fbb",
+              "date": "2024-04-28T21:42:21.903Z",
+              "waterDailyNorma": 2000,
               "amount": 250,
-              "time": "2024-04-17T12:30:45.000Z",
-              "_id": "661f913e10aa41a9b53c95ad"
-            },
-            {
-              "amount": 250,
-              "time": "2024-04-17T12:30:45.000Z",
-              "_id": "661f931510aa41a9b53c95b3"
-            },
-            {
-              "amount": 250,
-              "time": "2024-04-17T12:30:45.000Z",
-              "_id": "661f9640f287375305b28830"
+              "owner": "662e8d7ca65df5fa1d92229e"
             }
           ],
-          "owner": "661cfcf810f883d8229047b1"
+          "owner": "662e8d7ca65df5fa1d92229e"
         }
       },
-      "MonthWaterResponse": {
+      "GetMonthWaterResponse": {
         "type": "array",
         "description": "Information about consumed water for month",
         "example": [
           {
             "_id": "661faad80ea4406ee7d08548",
             "date": "2024-04-07T10:30:45.000Z",
-            "consumedAmountWater": 250,
             "waterDailyNorma": 2000,
-            "consumedWaterDoses": [
-              {
-                "amount": 250,
-                "time": "2024-04-17T12:30:45.000Z",
-                "_id": "661faad80ea4406ee7d08549"
-              }
-            ],
+            "amount": 250,
             "owner": "661fa9617f3e8939e7f9a6fd"
           },
           {
             "_id": "661faac61f6950abe21ab4cf",
             "date": "2024-04-08T10:30:45.000Z",
-            "consumedAmountWater": 250,
             "waterDailyNorma": 2000,
-            "consumedWaterDoses": [
-              {
-                "amount": 250,
-                "time": "2024-04-08T10:30:45.000Z",
-                "_id": "661faac61f6950abe21ab4d0"
-              }
-            ],
+            "amount": 250,
             "owner": "661fa9617f3e8939e7f9a6fd"
           }
         ]

@@ -1,32 +1,41 @@
-const { Water } = require('../../models/water');
-const { HttpError } = require('../../helpers');
+import { Water } from '../../models/water.js';
+import { HttpError } from '../../helpers/HttpError.js';
 
 const getDayWaterData = async (req, res) => {
-  const { date } = req.params;
   const { _id: owner } = req.user;
 
-  const [year, month, day] = date.split('-');
+  const date = new Date(req.params.date);
+  date.setMinutes(date.getMinutes() - date.getTimezoneOffset());
 
-  const utcDate = new Date(Date.UTC(year, month - 1, day));
-
-  const startOfDay = new Date(utcDate);
+  const startOfDay = new Date(date);
   startOfDay.setUTCHours(0, 0, 0, 0);
-  const endOfDay = new Date(utcDate);
-  endOfDay.setUTCHours(23, 59, 59, 999);
+  startOfDay.setMinutes(startOfDay.getMinutes() + date.getTimezoneOffset());
+  const utcStart = startOfDay.toISOString();
 
-  const foundWaterDayData = await Water.findOne({
+  const endOfDay = new Date(date);
+  endOfDay.setUTCHours(23, 59, 59, 999);
+  endOfDay.setMinutes(endOfDay.getMinutes() + date.getTimezoneOffset());
+  const utcEnd = endOfDay.toISOString();
+
+  const foundWaterDayData = await Water.find({
     owner,
     date: {
-      $gte: startOfDay,
-      $lt: endOfDay,
+      $gte: utcStart,
+      $lt: utcEnd,
     },
   }).select('-createdAt -updatedAt');
 
   if (!foundWaterDayData) {
-    throw HttpError(404, `Info for ${date} not found`);
+    throw HttpError(404, `Info for this day not found`);
   }
 
-  res.status(200).json(foundWaterDayData);
+  res.status(200).json({
+    date,
+    consumedAmountWater: foundWaterDayData.reduce((acc, i) => acc + i.amount, 0),
+    waterDailyNorma: foundWaterDayData.length > 0 ? foundWaterDayData[0].waterDailyNorma : req.user.waterDailyNorma,
+    consumedWaterDoses: foundWaterDayData,
+    owner,
+  });
 };
 
-module.exports = getDayWaterData;
+export default getDayWaterData;

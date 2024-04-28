@@ -1,40 +1,30 @@
-const ObjectId = require('mongodb').ObjectId;
-const { Water } = require('../../models/water');
-const { HttpError } = require('../../helpers');
+import {ObjectId} from 'mongodb';
+import { Water } from '../../models/water.js';
+import { HttpError } from '../../helpers/HttpError.js';
 
 const updateWater = async (req, res) => {
   const { id } = req.params;
-  const { amount, time } = req.body;
+  const { amount, date } = req.body;
   const { _id: owner } = req.user;
 
-  if (new Date(time) > new Date()) {
-    throw HttpError(400, 'Cannot add water consumption for future time');
-  }
-
-  const foundWaterDayData = await Water.findOne({
-    owner,
-    'consumedWaterDoses._id': ObjectId(id),
-  });
-
-  if (!foundWaterDayData) {
-    throw HttpError(404, 'Info about this consumed water dose not found');
-  }
-
-  const foundConsumedWaterDose = foundWaterDayData.consumedWaterDoses.find((item) => item._id.toString() === id);
-
   const updatedConsumedWaterDose = await Water.findOneAndUpdate(
-    { 'consumedWaterDoses._id': ObjectId(id) },
+    { _id: ObjectId(id), owner },
     {
       $set: {
-        consumedAmountWater: foundWaterDayData.consumedAmountWater - foundConsumedWaterDose.amount + amount,
-        'consumedWaterDoses.$': { amount, time, _id: ObjectId(id) },
+        amount,
+        date,
       },
     },
     { new: true },
   );
-  const { createdAt, updatedAt, ...data } = updatedConsumedWaterDose.toObject();
 
-  res.status(200).json(data);
+  if (!updatedConsumedWaterDose) {
+    throw HttpError(404, 'Info about this consumed water dose not found');
+  }
+
+  const { createdAt, updatedAt, ...waterNotice } = updatedConsumedWaterDose.toObject();
+
+  res.status(200).json(waterNotice);
 };
 
-module.exports = updateWater;
+export default  updateWater;

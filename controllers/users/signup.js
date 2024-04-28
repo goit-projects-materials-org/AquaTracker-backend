@@ -1,7 +1,8 @@
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const { HttpError } = require('../../helpers');
-const { User } = require('../../models/user');
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { HttpError } from '../../helpers/HttpError.js';
+import { User } from '../../models/user.js';
+
 const { SECRET_KEY, REFRESH_SECRET_KEY } = process.env;
 
 const signup = async (req, res) => {
@@ -32,4 +33,4 @@ const signup = async (req, res) => {
   res.status(201).json({ email, name, avatarURL, gender, weight, activeTime, waterDailyNorma, token, refreshToken });
 };
 
-module.exports = signup;
+export default signup

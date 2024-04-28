@@ -1,14 +1,16 @@
 {
   "name": "aqua-tracker",
-  "version": "1.0.0",
-  "description": "",
-  "main": "server.js",
+  "type": "module",
+  "private": true,
+  "version": "0.0.0",
   "engines": {
-    "node": "16.16.0"
+    "node": "19.0.0"
   },
   "scripts": {
-    "start": "cross-env NODE_ENV=production node server.js",
-    "dev": "cross-env NODE_ENV=development nodemon server.js"
+    "start": "cross-env NODE_ENV=production node ./server.js",
+    "start:dev": "cross-env NODE_ENV=development nodemon ./server.js",
+    "lint": "eslint **/*.js",
+    "lint:fix": "eslint --fix **/*.js"
   },
   "keywords": [],
   "author": "",
